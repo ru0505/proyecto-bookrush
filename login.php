@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['dni']) && !empty($_P
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sergio-trendy" rel="stylesheet">
 
   <meta charset="UTF-8">
   <title>Iniciar Sesión - Book Rush</title>
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['dni']) && !empty($_P
   <style>
     body {
       background-color: #162a55ff;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Sergio Trendy', sans-serif;
     }
     .form-container {
       max-width: 400px;

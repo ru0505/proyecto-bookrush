@@ -9,12 +9,12 @@ if (!isset($_SESSION['usuario'])) {
 
 $dni = $_SESSION['usuario']['DNI'];
 
-// Capítulo 3 fijo
-$id_libro = 1;
-$id_capitulo = 3;
+// Parámetros
+$id_libro = isset($_GET['libro']) ? intval($_GET['libro']) : 2;
+$id_capitulo = isset($_GET['capitulo']) ? intval($_GET['capitulo']) : 4;
 $numero_pregunta = isset($_GET['pregunta']) ? intval($_GET['pregunta']) : 1;
 
-// Reiniciar puntajes si es la primera pregunta del capítulo
+// Reiniciar puntajes si es la primera pregunta
 if ($numero_pregunta == 1) {
     $stmt = $conn->prepare("DELETE FROM puntajes WHERE dni = ? AND id_libro = ? AND capitulo = ?");
     $stmt->bind_param("iii", $dni, $id_libro, $id_capitulo);
@@ -44,7 +44,7 @@ $opciones = [
     'D' => $pregunta['opcion_d']
 ];
 
-// Contar total de preguntas del capítulo
+// Contar cuántas preguntas hay en este capítulo
 $stmt2 = $conn->prepare("SELECT COUNT(*) as total_preguntas FROM preguntas WHERE id_libro = ? AND id_capitulo = ?");
 $stmt2->bind_param("ii", $id_libro, $id_capitulo);
 $stmt2->execute();
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Pregunta <?= $numero_pregunta ?> - Capítulo 3</title>
+<title>Pregunta <?= $numero_pregunta ?> - Capítulo <?= $id_capitulo ?></title>
 <style>
 body { font-family: Arial, sans-serif; background: #fcf2c0; color: #1e334e; text-align: center; padding: 40px; }
 .pregunta { font-size: 24px; margin-bottom: 30px; }
@@ -151,7 +151,7 @@ function enviarRespuesta(respuesta) {
 
             setTimeout(() => {
                 if(data.siguiente > 0) {
-                    window.location.href = "?pregunta=" + data.siguiente;
+                    window.location.href = "?libro=<?= $id_libro ?>&capitulo=<?= $id_capitulo ?>&pregunta=" + data.siguiente;
                 } else {
                     window.location.href = "../../total.php?capitulo=<?= $id_capitulo ?>";
                 }

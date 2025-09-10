@@ -11,11 +11,11 @@ $dni = $_SESSION['dni'];
 
 // Puntaje máximo por capítulo (ajusta según tu sistema)
 $maximos = [
-    1 => 280,
-    2 => 160,
-    3 => 20,
-    4 => 200,
-    5 => 20
+    1 => 100,
+    2 => 100,
+    3 => 100,
+    4 => 100,
+    5 => 100
 ];
 
 $puntajes = [];

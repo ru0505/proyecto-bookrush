@@ -26,7 +26,7 @@ $libros = [
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sergio-trendy" rel="stylesheet">
 
   <meta charset="UTF-8">
   <title>Literatura Regional</title>
@@ -36,7 +36,7 @@ $libros = [
       color: #1e334e;
       font-family: 'Inter', sans-serif;
       padding: 40px;
-      font-family: 'Fredoka', sans-serif;
+      font-family: 'Sergio Trendy', sans-serif;
     }
     .libros-grid {
       display: grid;
@@ -123,7 +123,7 @@ $libros = [
         <img src="platos/<?= htmlspecialchars($libro['imagen']) ?>" alt="<?= htmlspecialchars($libro['nombre']) ?>">
         <h3><?= htmlspecialchars($libro['nombre']) ?></h3>
         <p><?= htmlspecialchars($libro['descripcion']) ?></p>
-        <a href="cuentos/<?= htmlspecialchars($libro['archivo']) ?>" target="_blank">
+        <a href="<?= htmlspecialchars($libro['archivo']) ?>">
           <button>Leer cuento completo</button>
         </a>
       </div>

@@ -2,44 +2,60 @@
 session_start();
 include '../../conexion.php';
 
-if (!isset($_SESSION['dni'])) {
+// Verificar sesión
+if (!isset($_SESSION['usuario']['DNI'])) {
     echo json_encode(['status' => 'sesion']);
     exit;
 }
 
-if (!isset($_POST['id_pregunta'], $_POST['respuesta'], $_POST['capitulo'])) {
+// Verificar datos POST
+if (!isset($_POST['id_libro'], $_POST['capitulo'], $_POST['id_pregunta'], $_POST['respuesta'])) {
     echo json_encode(['status' => 'error', 'msg' => 'Datos incompletos']);
     exit;
 }
 
-$dni = $_SESSION['dni'];
+// Obtener variables
+$dni = $_SESSION['usuario']['DNI'];
+$id_libro = intval($_POST['id_libro']);
+$capitulo = intval($_POST['capitulo']);
 $id_pregunta = intval($_POST['id_pregunta']);
 $respuesta_usuario = strtoupper(trim($_POST['respuesta']));
-$capitulo = intval($_POST['capitulo']);
 
-// Obtener respuesta correcta
-$stmt = $conn->prepare("SELECT respuesta_correcta FROM preguntas WHERE id_pregunta = ?");
-$stmt->bind_param("i", $id_pregunta);
+// Obtener respuesta correcta y puntaje
+$stmt = $conn->prepare("
+    SELECT respuesta_correcta, puntaje 
+    FROM preguntas 
+    WHERE id_libro = ? AND id_capitulo = ? AND numero_pregunta = ?
+");
+$stmt->bind_param("iii", $id_libro, $capitulo, $id_pregunta);
 $stmt->execute();
 $result = $stmt->get_result();
-$correcta = $result->fetch_assoc();
+$pregunta = $result->fetch_assoc();
 
-if (!$correcta) {
+if (!$pregunta) {
     echo json_encode(['status' => 'error', 'msg' => 'Pregunta no encontrada']);
     exit;
 }
 
-$respuesta_correcta = strtoupper(trim($correcta['respuesta_correcta']));
+$respuesta_correcta = strtoupper(trim($pregunta['respuesta_correcta']));
+$puntaje_pregunta = intval($pregunta['puntaje']);
 $es_correcta = ($respuesta_usuario === $respuesta_correcta);
-$puntaje = $es_correcta ? 20 : 0;
+$puntaje = $es_correcta ? $puntaje_pregunta : 0;
 
-// Guardar o actualizar en la tabla puntajes
-$stmt = $conn->prepare("INSERT INTO puntajes (dni, capitulo, puntaje, id_pregunta)
-                        VALUES (?, ?, ?, ?)
-                        ON DUPLICATE KEY UPDATE puntaje = VALUES(puntaje)");
-$stmt->bind_param("siii", $dni, $capitulo, $puntaje, $id_pregunta);
-$stmt->execute();
+// Insertar o actualizar puntaje en tabla puntajes
+$stmt = $conn->prepare("
+    INSERT INTO puntajes (DNI, id_libro, CAPITULO, PUNTAJE, id_pregunta)
+    VALUES (?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE PUNTAJE = VALUES(PUNTAJE)
+");
+$stmt->bind_param("siiii", $dni, $id_libro, $capitulo, $puntaje, $id_pregunta);
 
+if (!$stmt->execute()) {
+    echo json_encode(['status' => 'error', 'msg' => 'Error al guardar el puntaje']);
+    exit;
+}
+
+// Respuesta JSON
 echo json_encode([
     'status' => 'ok',
     'correcta' => $respuesta_correcta,

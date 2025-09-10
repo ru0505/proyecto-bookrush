@@ -74,14 +74,14 @@ tornado, junto a su perro Toto, hasta la mágica tierra de Oz.", "imagen" => "ma
   <title>Book Rush - Lecturas Infantiles</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sergio-trendy" rel="stylesheet">
 
   <style>
     * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Fredoka', sans-serif;
+    font-family: 'Sergio Trendy', sans-serif;
     font-size:23px;
     }
 
@@ -108,7 +108,7 @@ tornado, junto a su perro Toto, hasta la mágica tierra de Oz.", "imagen" => "ma
     .top-bar h1 {
     font-size: 35px;
     color: #d85e39; 
-    font-family: 'Fredoka', sans-serif;
+    font-family: 'Sergio Trendy', sans-serif;
     }
 
     .top-bar .links a {
@@ -184,7 +184,7 @@ tornado, junto a su perro Toto, hasta la mágica tierra de Oz.", "imagen" => "ma
     color: #d85e39;
     margin-bottom: 20px;
     text-align: center;
-    font-family: 'Fredoka', sans-serif;
+    font-family: 'Sergio Trendy', sans-serif;
     }
 
     .libros-grid {
@@ -545,7 +545,7 @@ tornado, junto a su perro Toto, hasta la mágica tierra de Oz.", "imagen" => "ma
       <h3><?= htmlspecialchars($libro['nombre']) ?></h3>
       <p><?= htmlspecialchars($libro['descripcion']) ?></p>
       <?php if (isset($libro['archivo']) && file_exists($libro['archivo'])): ?>
-        <a href="<?= htmlspecialchars($libro['archivo']) ?>" target="_blank" rel="noopener noreferrer">
+        <a href="<?= htmlspecialchars($libro['archivo']) ?>">
           <button>Leer cuento completo</button>
         </a>
       <?php endif; ?>

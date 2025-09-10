@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/sergio-trendy" rel="stylesheet">
 
     <meta charset="UTF-8">
     <title>DRÁCULA</title>
@@ -13,7 +13,7 @@
             color: #000000ff;
             margin: 0;
             padding: 0;
-            font-family: 'Fredoka', sans-serif;
+            font-family: 'Sergio Trendy', sans-serif;
         }
 
         .contenedor {
@@ -35,7 +35,7 @@
         display: block; /* inline-block no es necesario aquí */
         margin-left: auto;
         margin-right: auto;
-        font-family: 'Fredoka', sans-serif;
+        font-family: 'Sergio Trendy', sans-serif;
     }
 
         .resumen {
@@ -49,7 +49,7 @@
         .resumen h2 {
             font-size: 50px;
             margin-top: 50;
-            font-family: 'Fredoka', sans-serif;
+            font-family: 'Sergio Trendy', sans-serif;
         }
 
         .imagen {

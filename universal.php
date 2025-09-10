@@ -44,7 +44,8 @@ $libros = [
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sergio-trendy" rel="stylesheet">
+
 
   <meta charset="UTF-8">
   <title>Literatura Universal</title>
@@ -52,7 +53,7 @@ $libros = [
     body {
       background-color: #1e3a8a;
       color: #b8a2a2ff;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Sergio Trendy', sans-serif;
       padding: 40px;
       font-family: 'Fredoka', sans-serif;
     }
@@ -141,10 +142,10 @@ $libros = [
         <img src="imagenes/<?= htmlspecialchars($libro['imagen']) ?>" alt="<?= htmlspecialchars($libro['nombre']) ?>">
         <h3><?= htmlspecialchars($libro['nombre']) ?></h3>
         <p><?= htmlspecialchars($libro['descripcion']) ?></p>
-        <a href="cuentos/<?= htmlspecialchars($libro['archivo']) ?>" target="_blank">
-          <button>Leer cuento completo</button>
-        </a>
-      </div>
+        <a href="<?= htmlspecialchars($libro['archivo']) ?>">
+      <button>Leer cuento completo</button>
+    </a>
+    </div>
     <?php endforeach; ?>
   </div>
   <div class="volver">

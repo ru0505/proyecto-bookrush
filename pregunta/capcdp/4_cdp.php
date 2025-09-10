@@ -5,6 +5,8 @@ session_start();
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
+
   <meta charset="UTF-8">
   <title>Capítulo 1 - La ciudad y los perros</title>
   <style>
