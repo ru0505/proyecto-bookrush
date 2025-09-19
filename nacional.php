@@ -61,7 +61,7 @@ $libros = [
     "nombre" => "El caballero Carmelo",
     "descripcion" => "Un conmovedor cuento sobre la muerte y el honor de un gallo de pelea.",
     "imagen" => "imagenes/zorro_condor.png",
-    "archivo" => "El_caballero_Carmelo.html"
+    "archivo" => "El_caballero_Carmelo.php"
   ]
 ];
 ?>
