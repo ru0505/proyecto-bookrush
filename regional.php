@@ -13,7 +13,7 @@ $libros = [
     "nombre" => "Mitos y Leyendas ",
     "descripcion" => "Una crítica intensa a la violencia en un colegio militar de Lima.",
     "imagen" => "perros.png",
-    "archivo" => "La_ciudad_los_perros.html"
+    "archivo" => "mitos_leyendas_presentacion.php"
   ],
   3 => [
     "nombre" => "Poesias y Leyendas",
