@@ -5,16 +5,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
 
     <meta charset="UTF-8">
-    <title>MUJERCITAS</title>
+    <title>Mujercitas</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #9c8249ff;
-            color: #ffffffff;
+            background: linear-gradient(180deg, #fff7ed 0%, #fff1e0 50%, #fff4e6 100%);
+            color: #000000;
             margin: 0;
             padding: 0;
             font-family: 'Fredoka', sans-serif;
-            
         }
 
         .contenedor {
@@ -24,6 +23,13 @@
             display: flex;
             gap: 30px;
             flex-wrap: wrap;
+        }
+
+        h1 {
+        font-size: 70px;
+        font-weight: bold;
+        margin-top: 30px;
+
         }
 
         h1 {
@@ -136,7 +142,7 @@
                 Frankenstein narra la historia de Victor, quien logra dar vida a un ser construido a partir de restos humanos. Sin embargo, al contemplar el resultado, se siente horrorizado por su obra y la abandona. La criatura, rechazada por su creador y por la sociedad debido a su apariencia, sufre una existencia solitaria, por ello se llena de dolor y resentimiento, y decide vengarse de su creador.
             </p>
 
-            <a href="../pregunta/preguntas_frank.php" class="boton">Capítulos con preguntas</a>
+            <a href="../pregunta/menumujercitas.php" class="boton">Capítulos con preguntas</a>
             <?php if (isset($_SESSION['usuario'])): ?>
             <a href="../descargar.php?archivo=cdp.pdf" class="boton">Descargar libro completo</a>
             <?php else: ?>

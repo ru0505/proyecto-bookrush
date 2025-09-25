@@ -7,13 +7,13 @@ $libros = [
     "nombre" => "Jorge o el hijo del pueblo",
     "descripcion" => "Una obra pionera que denuncia las injusticias sociales en el Perú rural.",
     "imagen" => "avesnido.png",
-    "archivo" => "Aves_sin_nido.html"
+    "archivo" => "Aves_sin_nido.php"
   ],
   2 => [
     "nombre" => "Mitos y Leyendas de Arequipa",
     "descripcion" => "Una crítica intensa a la violencia en un colegio militar de Lima.",
     "imagen" => "perros.png",
-    "archivo" => "mitos_leyendas.html"
+    "archivo" => "mitos_leyendas_presentacion.php"
   ],
   3 => [
     "nombre" => "Poesias Completas",
