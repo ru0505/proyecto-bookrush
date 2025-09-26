@@ -125,26 +125,23 @@ session_start();
     <div class="texto">
       <h2>Capítulo 1</h2>
       <p>
-        “El círculo de muchachos rodeaba al Cava. Algunos reían en voz baja, otros lo miraban con curiosidad y otros con desprecio. El Jaguar se acercó y lo miró un momento sin hablar.
-—¿Tienes miedo? —preguntó.
-El Cava negó con la cabeza. Había sudor en su cara.
-—Bueno —dijo el Jaguar—. Si te descubren, di que tú solo robaste las respuestas. Nadie más.
-El Cava no contestó. El Jaguar volvió la cara hacia los otros.
-—¿Está bien? —preguntó.
+        El primer capítulo de Frankenstein inicia cuando Victor Frankenstein, el narrador principal de la historia, comienza a relatar su vida desde sus orígenes. Este capítulo forma parte del relato que Victor le cuenta a Robert Walton, el explorador que lo encuentra moribundo en el Ártico y que transmite la historia al lector a través de cartas dirigidas a su hermana, Margaret Saville.
 </p>
 <p>
-Nadie dijo nada. El Cava bajó la vista, sintiendo que la vergüenza se le subía como un calor a la cabeza.
-Salieron del baño. La cuadra estaba a oscuras, pero Cava no necesitaba ver para orientarse entre las dos columnas de literas; conocía de memoria ese recinto estirado y alto. Lo colmaba ahora una serenidad silenciosa, alterada instantáneamente por ronquidos o murmullos. Llegó a su cama, la segunda de la derecha, la de abajo, a un metro de la entrada. Mientras sacaba a tientas del ropero el pantalón, la camisa caqui y los botines, sentía junto a su rostro el aliento teñido de tabaco de Vallano, que dormía en la litera superior. Distinguió en la oscuridad la doble hilera de dientes grandes y blanquísimos del negro y pensó en un roedor. Sin bulla, lentamente, se despojó del pijama de franela azul y se vistió. Echó sobre sus hombros el sacón de paño. Luego, pisando despacio porque los botines crujían, caminó hasta la litera del Jaguar, que estaba al otro extremo de la cuadra, junto al baño.
-—Jaguar.
-—Sí. Toma.
+Victor inicia su narración explicando la historia de su familia. Es hijo de Alphonse Frankenstein y Caroline Beaufort, quienes son presentados como personas nobles y bondadosas. Alphonse, un hombre rico y respetado en Ginebra, se hace cargo del padre de Caroline, su antiguo amigo Beaufort, cuando este cae en la pobreza y muere poco tiempo después. Alphonse cuida de Caroline y, finalmente, se casa con ella, pese a la diferencia de edad. Este acto de compasión y responsabilidad sienta las bases del entorno moral en el que Victor crece.
       </p>
       <p>
-        Cava alargó la mano, tocó dos objetos fríos, uno de ellos áspero. Conservó en la mano la linterna, guardó la lima en el bolsillo del sacón.
-—¿Tienes miedo? —preguntó el Jaguar.
-—No —respondió Cava.
-—Bueno —dijo el Jaguar—. No te demores.
-Cava salió de la cuadra con pasos cautelosos. Aplastado contra la pared del patio, permaneció inmóvil unos segundos. Advirtió que el miedo lo paralizaría si no actuaba. Miró la pista de desfile iluminada y la neblina que la cubría. Luego se deslizó en dirección a las aulas.”
+        Victor enfatiza que fue criado en un hogar lleno de afecto, con padres que se esforzaron por guiarlo con ternura y principios. Describe su infancia como feliz y privilegiada, llena de amor y sin carencias materiales. Sus padres, al querer hacer el bien, adoptan a una niña huérfana llamada Elizabeth Lavenza, a quien encuentran en una familia campesina italiana durante un viaje. Caroline la considera un “regalo” para Victor, como si estuviera destinada a ser su compañera desde la infancia.
       </p>
+      <p>
+        Victor describe a Elizabeth como su "más preciosa posesión". Ella es bella, dulce y de naturaleza angelical, lo opuesto a la energía más impetuosa y científica de Victor. Desde pequeños, crecen como hermanos y desarrollan un vínculo muy fuerte, aunque también desde temprana edad se insinúa que su relación será más que fraternal.
+  </p>
+  <p>
+    En este capítulo, Victor también expresa su primer interés por el conocimiento. Aunque aún es un niño, siente una fuerte atracción por los misterios de la naturaleza. Se muestra fascinado por los libros de alquimia y los antiguos pensadores como Cornelio Agrippa, Paracelso y Alberto Magno, cuyas ideas sobre la transmutación de los elementos y el poder oculto de la naturaleza encienden su imaginación. Sus padres desaprueban estos estudios, pero no lo guían con firmeza hacia una ciencia más racional, lo que permite que Victor cultive una visión mística y romántica del conocimiento.
+  </p>
+  <p>
+    El capítulo termina presentando el escenario para el desarrollo del carácter de Victor Frankenstein: un joven brillante y apasionado, criado en el seno de una familia amorosa, con un fuerte sentido del destino, y con una temprana obsesión por descubrir los secretos más profundos del universo. Esta combinación de privilegio, amor y ambición científica sentará las bases de la tragedia que vendrá.
+  </p>
     </div>
   </div>
 
@@ -152,22 +149,27 @@ Cava salió de la cuadra con pasos cautelosos. Aplastado contra la pared del pat
     <h3 onclick="toggleGlosario()"> Mostrar / Ocultar Glosario</h3>
     <div class="contenido-glosario" id="glosario">
       <ul>
-        <li><strong>Garita:</strong> Caseta pequeña donde se hace vigilancia.</li>
-        <li><strong>Neblina tenue:</strong> Capa ligera de nubes bajas que nubla la vista.</li>
-        <li><strong>Camaradería:</strong> Amistad y compañerismo en un grupo.</li>
-        <li><strong>Humillaciones:</strong> Avergonzar o rebajar a alguien públicamente.</li>
-        <li><strong>Alianzas frágiles:</strong> Relaciones temporales y poco confiables.</li>
-        <li><strong>Amenazas invisibles:</strong> Peligros que no se ven, pero se sienten.</li>
-        <li><strong>Jerarquía:</strong> Organización de poder en niveles superiores e inferiores.</li>
-        <li><strong>Círculo:</strong> Grupo secreto de cadetes con más poder que los oficiales.</li>
-        <li><strong>Moneda diaria:</strong> Metáfora para algo que ocurre constantemente.</li>
-        <li><strong>Brutalidad:</strong> Violencia extrema, sin compasión.</li>
+        <li><strong>Narrador:</strong> Persona que cuenta la historia en una obra literaria.</li>
+        <li><strong>Relatar:</strong> Contar o narrar hechos o sucesos.</li>
+        <li><strong>Explorador:</strong> Persona que viaja a lugares desconocidos para descubrirlos o estudiarlos.</li>
+        <li><strong>Ártico:</strong> Región polar del hemisferio norte, extremadamente fría.</li>
+        <li><strong>Cartas:</strong> Mensajes escritos que se envían entre personas, forma de comunicación epistolar.</li>
+        <li><strong>Privilegiado:</strong> Que disfruta de ventajas o beneficios que otros no tienen.</li>
+        <li><strong>Huérfana:</strong> Niña que ha perdido a sus padres.</li>
+        <li><strong>Campesina:</strong> Persona que vive en el campo y trabaja en tareas agrícolas.</li>
+        <li><strong>Posesión:</strong> Algo que se tiene o se considera propio.</li>
+        <li><strong>Impulsivo:</strong> Que actúa sin reflexionar, de manera espontánea.</li>
+        <li><strong>Alquimia:</strong> Antigua práctica precientífica que buscaba convertir metales en oro y hallar el elixir de la vida.</li>
+        <li><strong>Transmutación:</strong> Cambio de una cosa en otra, especialmente en contextos alquímicos.</li>
+        <li><strong>Tragedia:</strong> Suceso triste o dramático con consecuencias dolorosas.</li>
+        <li><strong>Moral:</strong> Conjunto de valores que guían el comportamiento humano.</li>
+        <li><strong>Racional:</strong> Que se basa en la razón y el pensamiento lógico.</li>
       </ul>
     </div>
   </div>
 
   <div class="botones">
-    <a href="/proyectolect/trivia/cdp/1.php">Comenzar con las preguntas</a>
+    <a href="../../trivia/frankenstein/preguntas_frankenstein.php?capitulo=1&pregunta=1" class="boton">Comenzar con las preguntas</a>
   </div>
 
   <script>

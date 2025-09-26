@@ -169,7 +169,7 @@ Cava salió de la cuadra con pasos cautelosos. Aplastado contra la pared del pat
   </div>
 
   <div class="botones">
-    <a href="/proyectolect/trivia/cdp/1.php">Comenzar con las preguntas</a>
+    <a href="/PROYECTO-BOOKRUSH/trivia/cdp/1.php">Comenzar con las preguntas</a>
   </div>
 
   <script>

@@ -153,7 +153,7 @@ function enviarRespuesta(respuesta) {
                 if(data.siguiente > 0) {
                     window.location.href = "?libro=<?= $id_libro ?>&capitulo=<?= $id_capitulo ?>&pregunta=" + data.siguiente;
                 } else {
-                    window.location.href = "../../total.php?capitulo=<?= $id_capitulo ?>";
+                    window.location.href = "../../total.php?libro=<?= $id_libro ?>&capitulo=<?= $id_capitulo ?>";
                 }
             }, 1500);
         }

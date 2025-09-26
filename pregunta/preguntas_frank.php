@@ -1,128 +1,67 @@
-?php session_start(); ?>
+<?php
+session_start();
+include '../conexion.php';
+
+// Asegúrate de que el usuario esté logueado (ajusta si usas otro key)
+if (!isset($_SESSION['usuario'])) {
+    header("Location: ../login.php");
+    exit;
+}
+
+$dni = $_SESSION['usuario']['DNI'] ?? null;
+$id_libro = 4; 
+
+// Puntaje máximo por capítulo (ajusta si quieres)
+$maximos = [1 => 100, 2 => 100, 3 => 100, 4 => 100, 5 => 100];
+
+$puntajes = [];
+for ($i = 1; $i <= 5; $i++) {
+    $sql = "SELECT SUM(PUNTAJE) AS total FROM puntajes WHERE DNI=? AND id_libro=? AND CAPITULO=?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sii", $dni, $id_libro, $i);
+    $stmt->execute();
+    $res = $stmt->get_result()->fetch_assoc();
+    $puntajes[$i] = $res['total'] ?? 0;
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
-
-    <meta charset="UTF-8">
-    <title>Capítulos con Preguntas</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #6cacd1ff;
-            color: #020202ff;
-            margin: 0;
-            padding: 0;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 40px;
-            margin: 30px 0;
-            color: #ffffffff;
-        }
-        .volver {
-            margin: 20px;
-        }
-
-        .flecha-grande::before {
-            content: "←";
-            font-size: 50px;
-            color: black;
-            text-decoration: none;
-        }
-        .flecha-grande {
-            text-decoration: none;
-        }
-
-
-        .linea-tiempo {
-            max-width: 1000px;
-            margin: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 50px;
-        }
-
-        .fila {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-            position: relative;
-        }
-
-        .boton-capitulo {
-            background-color: #38256bff;
-            color: white;
-            padding: 40px 100px;
-            border: none;
-            border-radius: 20px;
-            font-size: 25px;
-            text-decoration: none;
-            font-weight: bold;
-            text-align: center;
-            box-shadow: 2px 2px 2px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
-        }
-
-        .boton-capitulo:hover {
-            transform: scale(1.05);
-            background-color: #277abdff;
-        }
-
-        .flecha {
-            font-size: 60px;
-            color: #0f6cba;
-            margin: 0 10px;
-        }
-
-        .flechas-arriba, .flechas-abajo {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 30px;
-        }
-
-        @media (max-width: 700px) {
-            .fila {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .flechas-arriba, .flechas-abajo {
-                flex-direction: column;
-                gap: 20px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Capítulos - Frankenstein</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Fredoka', sans-serif; background: #736dc9ff; color: #020202; margin: 0; padding: 0; text-align: center; }
+    .cerrar { position: absolute; top: 15px; right: 20px; font-size: 40px; color: white; text-decoration: none; font-weight: bold; background: rgba(0,0,0,0.3); padding: 5px 15px; border-radius: 50%; }
+    h1 { font-size: 40px; margin: 50px 0 30px; color: white; text-shadow: 2px 2px 4px #000; }
+    .capitulo { display: inline-block; background-color: #38256b; color: white; padding: 20px; border-radius: 20px; font-size: 22px; font-weight: bold; text-decoration: none; margin: 15px; width: 200px; box-shadow: 2px 2px 8px rgba(0,0,0,0.3); }
+    .capitulo:hover { transform: scale(1.03); background-color: #277abd; }
+    .bloqueado { background-color: gray; pointer-events: none; opacity: 0.6; }
+    .progreso { background: #fcf2c0; border-radius: 10px; height: 15px; margin-top: 10px; overflow: hidden; }
+    .barra { background: #0f6cba; height: 100%; transition: width 0.3s; }
+</style>
 </head>
 <body>
+<a href="../cuentos/frankenstein.php" class="cerrar">✖</a>
+<h1>📚 Capítulos - Frankenstein</h1>
 
-    <div class="volver">
-    <a href="../index.php" class="flecha-grande"></a>
-    </div>
-
-<h1>Capítulos con Preguntas</h1>
-
-<div class="linea-tiempo">
-
-    <div class="flechas-arriba">
-        <a href="../pregunta/capcdp/1_frank.php" class="boton-capitulo">Capítulo 1</a>
-        <span class="flecha">➡️</span>
-        <a href="../pregunta/capcdp/2_frank.php" class="boton-capitulo">Capítulo 2</a>
-        <span class="flecha">➡️</span>
-        <a href="../pregunta/capcdp/3_frank.php" class="boton-capitulo">Capítulo 3</a>
-    </div>
-
-    <div class="flechas-abajo">
-        <a href="../pregunta/capcdp/4_frank.php" class="boton-capitulo">Capítulo 4</a>
-        <span class="flecha">➡️</span>
-        <a href="../pregunta/capcdp/5_frank.php" class="boton-capitulo">Capítulo 5</a>
-        
-    </div>
-
-</div>
-
+<?php
+for ($i = 1; $i <= 5; $i++) {
+    $porcentaje = 0;
+    if ($maximos[$i] > 0) {
+        $porcentaje = min(100, round(($puntajes[$i] / $maximos[$i]) * 100));
+    }
+    // desbloqueo: si i>1 requiere completar i-1 (ajusta regla si quieres otra)
+    $bloqueado = ($i > 1 && $puntajes[$i-1] < $maximos[$i-1]) ? "bloqueado" : "";
+    // enlace al contenido del capítulo (archivo que ya tienes en capfrank/)
+    echo "<a href='capfrank/{$i}_frank.php' class='capitulo $bloqueado'>
+            Capítulo $i
+            <div class='progreso'>
+                <div class='barra' style='width: {$porcentaje}%;'></div>
+            </div>
+            <small>{$porcentaje}% completado</small>
+          </a>";
+}
+?>
 </body>
 </html>
