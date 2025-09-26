@@ -19,7 +19,7 @@ $libros = [
     "nombre" => "Poesias Completas",
     "descripcion" => "Un conmovedor cuento sobre la muerte y el honor de un gallo de pelea.",
     "imagen" => "zorro_condor.png",
-    "archivo" => "mitos_leyendas.html"
+    "archivo" => "poesias_completas.php"
   ],
   4 => [
     "nombre" => "Crimen y Castigo",
