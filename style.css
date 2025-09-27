@@ -111,6 +111,7 @@ main {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
   margin-top: 20px;
+  padding: 20px; /* Añadido para mejor espaciado */
 }
 
 .libro {
@@ -157,6 +158,22 @@ main {
 
 .libro button:hover {
   background-color: #ffd447;
+}
+
+/* Estilos para la barra de progreso */
+.progreso {
+  width: 100%;
+  height: 10px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.barra {
+  height: 100%;
+  background-color: #4CAF50;
+  transition: width 0.3s ease;
 }
 
 .leer-mas {
@@ -304,18 +321,23 @@ footer {
   color: #fff;
 }
 
+/* CORRIGIENDO EL MODAL - ESTA ERA LA CAUSA DEL PROBLEMA */
 #confirmacion-modal {
-  display: none;
+  display: none; /* Solo esta declaración, sin display: flex */
   position: fixed;
-  z-index: 1000;
+  z-index: 9999;
   left: 0;
   top: 0;
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Cuando se muestre el modal, entonces usar flex */
+#confirmacion-modal.show {
+  display: flex;
 }
 
 .modal-content {
