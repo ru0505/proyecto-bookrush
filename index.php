@@ -153,8 +153,8 @@ if (!empty($dni)) {
         <small><?= $porcentaje ?>% completado</small><br>
 
         <?php if (!empty($archivo)): ?>
-          <a href="pdf/<?= $archivo ?>" target="_blank">
-            <button>📖 Leer PDF</button>
+          <a href="detalle_libros/detalle_libro.php?id=<?= $id ?>">
+            <button>📖 Leer Cuento Completo</button>
           </a>
         <?php else: ?>
           <button disabled style="background:#ccc;">PDF no disponible</button>
