@@ -163,7 +163,7 @@ $libro = $result->fetch_assoc();
       <?php endif; ?>
 
       <div class="botones">
-        <a href="../capitulos.php?id=<?= $libro['id_libro'] ?>">🧩 Capítulos con preguntas</a>
+        <a href="../mapa_capitulos/mapa_capitulos.php?id_libro=<?= $libro['id_libro'] ?>">🧩 Capítulos con preguntas</a>
 
         <?php if (!empty($libro['libro_pdf'])): ?>
           <a href="../pdf/<?= htmlspecialchars($libro['libro_pdf']) ?>" target="_blank">📘 Descargar libro completo</a>
