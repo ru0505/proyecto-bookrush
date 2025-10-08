@@ -103,9 +103,11 @@ $startIndex = (!empty($completed) ? max($completed) : 1) - 1;
                     if (in_array($cap['id_capitulo'], $completed)) $estado = "completed";
                     elseif ($index == $startIndex) $estado = "playable";
 
-                    echo "<a href='capitulos/{$id_libro}/{$cap['id_capitulo']}.php' class='coin {$estado}' style='left:{$x}px;top:{$y}px'>
+                    echo "<a href='../contenido_capitulo/contenido_capitulo.php?id_capitulo={$cap['id_capitulo']}&id_libro={$id_libro}' 
+                            class='coin {$estado}' 
+                            style='left:{$x}px; top:{$y}px'>
                             <span class='num'>{$cap['id_capitulo']}</span>
-                          </a>";
+                        </a>";
 
                     // mover coordenadas
                     $x += $step * $dir;

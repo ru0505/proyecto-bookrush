@@ -1,25 +1,23 @@
 <?php
 session_start();
-include("../../conexion.php");
+include("../conexion.php");
 
-// Parámetros
-$id_libro = 4; 
-$id_capitulo = isset($_GET['capitulo']) ? (int)$_GET['capitulo'] : 1;
+// 🔹 Parámetros dinámicos
+$id_libro = isset($_GET['id_libro']) ? (int)$_GET['id_libro'] : 1;
+$id_capitulo = isset($_GET['id_capitulo']) ? (int)$_GET['id_capitulo'] : 1;
 $numero_pregunta = isset($_GET['pregunta']) ? (int)$_GET['pregunta'] : 1;
 
-// Obtener la pregunta actual
+// 🔹 Obtener la pregunta actual
 $stmt = $conn->prepare("SELECT * FROM preguntas WHERE id_libro = ? AND id_capitulo = ? AND numero_pregunta = ?");
 $stmt->bind_param("iii", $id_libro, $id_capitulo, $numero_pregunta);
 $stmt->execute();
-$result = $stmt->get_result();
-$pregunta = $result->fetch_assoc();
+$pregunta = $stmt->get_result()->fetch_assoc();
 
 if (!$pregunta) {
-    echo "No hay preguntas en este capítulo.";
-    exit;
+    die("No hay preguntas para este capítulo.");
 }
 
-// Opciones
+// 🔹 Opciones
 $opciones = [
     'A' => $pregunta['opcion_a'],
     'B' => $pregunta['opcion_b'],
@@ -27,55 +25,48 @@ $opciones = [
     'D' => $pregunta['opcion_d']
 ];
 
-// Obtener la última pregunta de este capítulo
+// 🔹 Última pregunta
 $stmt2 = $conn->prepare("SELECT MAX(numero_pregunta) AS max_preg FROM preguntas WHERE id_libro = ? AND id_capitulo = ?");
 $stmt2->bind_param("ii", $id_libro, $id_capitulo);
 $stmt2->execute();
-$result2 = $stmt2->get_result();
-$row = $result2->fetch_assoc();
-$ultima_pregunta = (int)$row['max_preg'];
+$ultima_pregunta = (int)$stmt2->get_result()->fetch_assoc()['max_preg'];
 
-// Si se responde algo, procesar
+// 🔹 Procesar respuesta
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $respuesta = $_POST['respuesta'] ?? "";
     $correcta = ($respuesta === $pregunta['respuesta_correcta']);
 
     if ($correcta) {
-        $puntaje = 20; // o el valor que quieras por respuesta correcta
+        $puntaje = $pregunta['puntaje'] ?? 20;
 
-        $stmtSumar = $conn->prepare("
+        $stmt3 = $conn->prepare("
             INSERT INTO puntajes (dni, id_libro, capitulo, id_pregunta, puntaje)
             VALUES (?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE puntaje = VALUES(puntaje)
         ");
-        $stmtSumar->bind_param("siiii", $_SESSION['usuario']['DNI'], $id_libro, $id_capitulo, $numero_pregunta, $puntaje);
-        $stmtSumar->execute();
+        $stmt3->bind_param("siiii", $_SESSION['dni'], $id_libro, $id_capitulo, $pregunta['id_pregunta'], $puntaje);
+        $stmt3->execute();
     }
 
-    // Guardar resultado en sesión
     $_SESSION['respuestas'][$id_capitulo][$numero_pregunta] = [
         'respuesta' => $respuesta,
         'correcta' => $correcta
     ];
 
-    // Calcular siguiente pregunta
-    $siguiente = ($numero_pregunta < $ultima_pregunta) ? $numero_pregunta + 1 : 0;
-
     echo json_encode([
         "status" => "ok",
         "es_correcta" => $correcta,
-        "siguiente" => $siguiente
+        "siguiente" => $numero_pregunta < $ultima_pregunta ? $numero_pregunta + 1 : 0
     ]);
     exit;
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <title>Pregunta <?= $numero_pregunta ?> - Capítulo <?= $id_capitulo ?></title>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css"> 
 </head>
 <body>
 
@@ -131,14 +122,11 @@ function enviarRespuesta(respuesta) {
                 resultado.textContent = "✅ ¡Correcto!";
                 resultado.style.color = "green";
 
-                // 🔹 Mandar puntaje al sumar.php
-                fetch("../../sumar.php", {
+                fetch("../sumar.php", {
                     method: "POST",
                     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: "id_libro=4&capitulo=<?= $id_capitulo ?>&puntaje=20"
-                })
-                .then(r => r.json())
-                .then(rdata => console.log(rdata));
+                    body: "id_libro=<?= $id_libro ?>&capitulo=<?= $id_capitulo ?>&puntaje=20"
+                });
             } else if (respuesta === "") {
                 resultado.textContent = "⏰ Tiempo agotado.";
                 resultado.style.color = "gray";
@@ -149,16 +137,15 @@ function enviarRespuesta(respuesta) {
 
             setTimeout(() => {
                 if (data.siguiente > 0) {
-                    window.location.href = "?capitulo=<?= $id_capitulo ?>&pregunta=" + data.siguiente;
+                    window.location.href = "?id_libro=<?= $id_libro ?>&id_capitulo=<?= $id_capitulo ?>&pregunta=" + data.siguiente;
                 } else {
-                    window.location.href = "../../total.php?libro=<?= $id_libro ?>&capitulo=<?= $id_capitulo ?>";
+                    window.location.href = "../total.php?id_libro=<?= $id_libro ?>&id_capitulo=<?= $id_capitulo ?>";
                 }
             }, 1500);
         }
     })
     .catch(() => alert("Error al conectar con el servidor."));
 }
-
 </script>
 
 </body>
