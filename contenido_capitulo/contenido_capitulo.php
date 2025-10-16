@@ -143,7 +143,7 @@ if (!$capitulo) {
   </div>
 
   <div class="botones">
-    <a href="../trivia/trivia.php?capitulo=<?= $id_capitulo ?>&pregunta=1">
+    <a href="../trivia/trivia.php?id_libro=<?= $id_libro ?>&id_capitulo=<?= $id_capitulo ?>&pregunta=1">
       Comenzar con las preguntas
     </a>
   </div>
