@@ -1,0 +1,13 @@
+# Archivos PDF (demasiado grandes para GitHub)
+*.pdf
+libros/*.pdf
+
+# Archivos de sistema
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Archivos temporales
+*.bak
+*.tmp
+*~
