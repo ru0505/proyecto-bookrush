@@ -31,16 +31,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['dni'], $_POST['nombre
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <link href="https://fonts.cdnfonts.com/css/sergio-trendy" rel="stylesheet">
 
 
   <meta charset="UTF-8">
   <title>Registro - Book Rush</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       background-color: #fcf2c0;
-      font-family: 'Sergio Trendy', sans-serif;
+      font-family: 'Fredoka', sans-serif;
     }
     .form-container {
       max-width: 480px;
