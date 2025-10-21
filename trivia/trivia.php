@@ -115,18 +115,17 @@ function enviarRespuesta(respuesta) {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: "respuesta=" + encodeURIComponent(respuesta)
     })
-    .then(res => res.json())
+    .then(res => {
+        if (!res.ok) {
+            throw new Error('Error en la respuesta del servidor');
+        }
+        return res.json();
+    })
     .then(data => {
         if (data.status === "ok") {
             if (data.es_correcta) {
                 resultado.textContent = "✅ ¡Correcto!";
                 resultado.style.color = "green";
-
-                fetch("../sumar.php", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: "id_libro=<?= $id_libro ?>&capitulo=<?= $id_capitulo ?>&puntaje=20"
-                });
             } else if (respuesta === "") {
                 resultado.textContent = "⏰ Tiempo agotado.";
                 resultado.style.color = "gray";
@@ -144,7 +143,10 @@ function enviarRespuesta(respuesta) {
             }, 1500);
         }
     })
-    .catch(() => alert("Error al conectar con el servidor."));
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Error al conectar con el servidor: " + error.message);
+    });
 }
 </script>
 
