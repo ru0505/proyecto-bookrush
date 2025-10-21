@@ -1,17 +1,17 @@
 <?php
 session_start();
-include '../conexion.php';
+include 'conexion.php';
 
 if (!isset($_SESSION['usuario'])) {
-    header("Location: ../login.php");
+    header("Location: login.php");
     exit;
 }
 
-$dni = $_SESSION['usuario']['DNI'];
+$dni = $_SESSION['usuario'];
 
 // Validar parámetros
 if (!isset($_GET['libro']) || !isset($_GET['capitulo'])) {
-    header("Location: ../index.php");
+    header("Location: index.php");
     exit;
 }
 
@@ -24,6 +24,6 @@ $stmt->bind_param("sii", $dni, $id_libro, $id_capitulo);
 $stmt->execute();
 
 // Redirigir de nuevo al selector de capítulos del libro
-header("Location: ../pregunta/preguntas_frank.php?libro=$id_libro");
+header("Location: trivia/trivia.php?libro=$id_libro&capitulo=$id_capitulo");
 exit;
 ?>

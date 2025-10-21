@@ -22,9 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['dni']) && !empty($_P
     if ($resultado->num_rows === 1) {
         $usuario = $resultado->fetch_assoc();
 
-        // Verificar contraseña
+        // Verificar contraseña 
         if (password_verify($password, $usuario['CONTRASENA'])) {
-            // Guarda solo el nombre del usuario
             $_SESSION['usuario'] = $usuario['NOMBRE']; 
             $_SESSION['dni'] = $usuario['DNI'];
 
