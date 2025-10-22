@@ -10,7 +10,7 @@ if (!isset($_SESSION['usuario'])) {
 $dni = $_SESSION['usuario'];
 
 // Validar parámetros
-if (!isset($_GET['libro']) || !isset($_GET['capitulo'])) {
+if (!isset($_GET['id_libro']) || !isset($_GET['id_capitulo'])) {
     header("Location: index.php");
     exit;
 }
