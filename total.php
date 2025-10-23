@@ -54,7 +54,7 @@ body { font-family: Arial, sans-serif; text-align: center; background: #fcf2c0; 
     <a class="boton" href="pregunta/preguntas_frank.php?capitulo=<?= $capitulo + 1 ?>">➡️ Siguiente capítulo</a>
 <?php endif; ?>
 
-<a class="boton" href="reiniciar_capitulo.php?capitulo=<?= $capitulo ?>&libro=<?= $id_libro ?>">🔄 Reintentar capítulo</a>
+<a class="boton" href="reiniciar_capitulo.php?id_capitulo=<?= $capitulo ?>&id_libro=<?= $id_libro ?>">🔄 Reintentar capítulo</a>
 <a class="boton" href="mapa_capitulos/mapa_capitulos.php?id_libro=<?= $id_libro ?>">🏠 Volver al menú de capítulos</a>
 </body>
 </html>
