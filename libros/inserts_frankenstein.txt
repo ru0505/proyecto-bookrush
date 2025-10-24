@@ -1,0 +1,95 @@
+
+
+-- CAPÍTULO 1 (id_capitulo: 1, id_pregunta: 56-60)
+INSERT INTO preguntas (id_pregunta, id_libro, id_capitulo, numero_pregunta, enunciado, opcion_a, opcion_b, opcion_c, opcion_d, respuesta_correcta, puntaje) VALUES
+(56, 3, 1, 1, '¿A quién le cuenta Victor Frankenstein su historia?', 'A su madre', 'A un médico', 'A Robert Walton', 'A Elizabeth Lavenza', 'c', 20),
+(57, 3, 1, 2, '¿Qué acto de compasión realiza Alphonse Frankenstein?', 'Viaja al Ártico a buscar a su hijo', 'Adopta a varios niños', 'Ayuda a un viejo amigo en la pobreza y se casa con su hija', 'Renuncia a su fortuna por amor', 'c', 20),
+(58, 3, 1, 3, '¿Cómo describe Victor su infancia?', 'Triste y solitaria', 'Llena de problemas económicos', 'Feliz y rodeada de afecto', 'Marcada por la guerra', 'c', 20),
+(59, 3, 1, 4, '¿Quién es Elizabeth Lavenza para Victor?', 'Su hermana biológica', 'Una vecina que lo cuida', 'Una niña adoptada por sus padres y considerada su futura esposa', 'Una joven noble exiliada', 'c', 20),
+(60, 3, 1, 5, '¿Qué autores llaman la atención de Victor en su niñez?', 'Galileo, Newton y Kepler', 'Dante, Maquiavelo y Petrarca', 'Cornelio Agrippa, Paracelso y Alberto Magno', 'Descartes, Locke y Rousseau', 'c', 20);
+
+-- CAPÍTULO 2 (id_capitulo: 2, id_pregunta: 61-65)
+INSERT INTO preguntas (id_pregunta, id_libro, id_capitulo, numero_pregunta, enunciado, opcion_a, opcion_b, opcion_c, opcion_d, respuesta_correcta, puntaje) VALUES
+(61, 3, 2, 1, '¿Quiénes conformaban el círculo cercano de Victor durante su infancia?', 'Sus hermanos menores y un tutor', 'Elizabeth y un sacerdote', 'Elizabeth y Henry Clerval', 'Henry Clerval y un profesor de ciencias', 'c', 20),
+(62, 3, 2, 2, '¿Qué tipo de autores fascinaban a Victor durante su juventud?', 'Poetas románticos como Byron y Shelley', 'Científicos modernos como Newton y Faraday', 'Ocultistas antiguos como Agrippa, Paracelso y Albertus Magnus', 'Novelistas del siglo XVIII', 'c', 20),
+(63, 3, 2, 3, '¿Cómo reaccionó el padre de Victor al ver el libro de Cornelio Agrippa?', 'Le dijo que era un gran autor', 'Le explicó que era un texto interesante pero anticuado', 'Lo animó a seguir leyendo', 'Lo despreció sin explicar por qué', 'd', 20),
+(64, 3, 2, 4, '¿Qué evento natural impactó profundamente a Victor?', 'La muerte de su madre', 'Un eclipse total', 'Un rayo que destruyó un árbol', 'Una nevada temprana', 'c', 20),
+(65, 3, 2, 5, '¿Qué transición intelectual empieza a vivir Victor al final del capítulo?', 'De la religión a la política', 'Del arte a la ciencia empírica', 'De la superstición a la ciencia moderna', 'De la literatura a la poesía', 'c', 20);
+
+-- CAPÍTULO 3 (id_capitulo: 3, id_pregunta: 66-70)
+INSERT INTO preguntas (id_pregunta, id_libro, id_capitulo, numero_pregunta, enunciado, opcion_a, opcion_b, opcion_c, opcion_d, respuesta_correcta, puntaje) VALUES
+(66, 3, 3, 1, '¿Qué evento personal marca profundamente a Victor al inicio del capítulo?', 'El nacimiento de su hermano menor', 'La muerte de su madre por escarlatina', 'El rechazo de Elizabeth', 'Un accidente en la universidad', 'b', 20),
+(67, 3, 3, 2, '¿Cuál es el deseo final de Caroline Beaufort antes de morir?', 'Que Victor se convierta en médico', 'Que Elizabeth se mude a Inglaterra', 'Que Victor y Elizabeth se casen', 'Que Henry Clerval estudie en Ingolstadt', 'c', 20),
+(68, 3, 3, 3, '¿Cómo reacciona M. Krempe cuando Victor menciona a los antiguos alquimistas?', 'Con interés y entusiasmo', 'Con respeto académico', 'Con desdén y burla', 'Con neutralidad científica', 'c', 20),
+(69, 3, 3, 4, '¿Qué diferencia a M. Waldman de M. Krempe en su trato con Victor?', 'Waldman también desprecia la alquimia', 'Waldman muestra comprensión y pasión por la ciencia', 'Waldman no cree en la educación formal', 'Waldman prohíbe a Victor estudiar química', 'b', 20),
+(70, 3, 3, 5, '¿Qué sentimiento despierta el discurso de Waldman en Victor?', 'Indiferencia hacia la ciencia', 'Deseo de abandonar la universidad', 'Un llamado emocional a descubrir los secretos de la vida', 'Miedo al conocimiento prohibido', 'c', 20);
+
+-- CAPÍTULO 4 (id_capitulo: 4, id_pregunta: 71-75)
+INSERT INTO preguntas (id_pregunta, id_libro, id_capitulo, numero_pregunta, enunciado, opcion_a, opcion_b, opcion_c, opcion_d, respuesta_correcta, puntaje) VALUES
+(71, 3, 4, 1, '¿Qué transforma el interés de Victor Frankenstein en una obsesión total?', 'La muerte de Elizabeth', 'El deseo de vengar a su madre', 'Su afán por descubrir el principio de la vida', 'Las burlas de sus compañeros', 'c', 20),
+(72, 3, 4, 2, '¿Qué acciones realiza Victor para investigar la muerte y la vida?', 'Asiste a clases de medicina solamente', 'Experimenta con animales vivos', 'Visita morgues y disecciona cadáveres', 'Consulta libros religiosos', 'c', 20),
+(73, 3, 4, 3, '¿Por qué Victor decide que su criatura será de gran tamaño?', 'Para poder verla desde lejos', 'Porque su laboratorio era muy grande', 'Porque así sería más fuerte que un humano', 'Porque trabajar con piezas pequeñas era más difícil', 'd', 20),
+(74, 3, 4, 4, '¿Cómo describe Victor a su creación durante el proceso de construcción?', 'Como un monstruo aterrador', 'Como un ser bello', 'Como una máquina viviente', 'Como un experimento arriesgado', 'b', 20),
+(75, 3, 4, 5, '¿Qué señales indican el creciente desequilibrio emocional de Victor?', 'Comienza a escribir poesía y cantar', 'Se obsesiona con su amigo Clerval', 'Se aísla, descuida su salud y abandona todo contacto personal', 'Quiere convertirse en profesor universitario', 'c', 20);
+
+-- CAPÍTULO 5 (id_capitulo: 5, id_pregunta: 76-80)
+INSERT INTO preguntas (id_pregunta, id_libro, id_capitulo, numero_pregunta, enunciado, opcion_a, opcion_b, opcion_c, opcion_d, respuesta_correcta, puntaje) VALUES
+(76, 3, 5, 1, '¿Qué ocurre finalmente en este capítulo que lo convierte en uno de los más importantes de la novela?', 'Victor regresa a casa con su familia', 'Victor da vida a su creación', 'El monstruo destruye el laboratorio', 'Henry descubre el experimento', 'b', 20),
+(77, 3, 5, 2, '¿Cuál es la reacción de Victor al ver viva a su criatura?', 'Euforia y orgullo', 'Curiosidad científica', 'Terror, remordimiento y rechazo', 'Comienza a enseñarle a hablar', 'c', 20),
+(78, 3, 5, 3, '¿Qué papel desempeña Henry Clerval en este fragmento?', 'Acusa a Victor de ser un criminal', 'Ayuda a Victor a continuar sus experimentos', 'Cuida de Victor durante su enfermedad', 'Se une a la criatura para vengarse', 'c', 20),
+(79, 3, 5, 4, '¿Qué simboliza la carta de Elizabeth que Victor recibe?', 'Una advertencia sobre la criatura', 'La ruptura definitiva con su familia', 'El regreso al mundo humano y afectivo', 'La orden de regresar a Ginebra urgentemente', 'c', 20),
+(80, 3, 5, 5, '¿Qué sentimiento comienza a acompañar a Victor tras su recuperación?', 'Esperanza por mejorar su experimento', 'Culpa por no terminar su proyecto', 'Amenaza constante por lo que su criatura podría hacer', 'Envidia del éxito de otros científicos', 'c', 20);
+
+
+
+-- 100 tradiciones
+
+
+INSERT INTO libros (id_libro, titulo, AUTOR, descripcion, archivo, resumen, personajes, categoria) VALUES
+(6, '100 tradiciones peruanas', 'Ricardo Palma', 'Colección de relatos que retratan la historia, costumbres y personajes del Perú colonial y republicano con humor, ironía y profundo conocimiento de la identidad criolla.', 'tradiciones_peruanas.pdf', 'Ricardo Palma recoge leyendas, anécdotas y sucesos históricos del Perú, mezclando realidad y ficción. Cada tradición es un retrato vivo de la época colonial, llena de pícaros, frailes, virreyes y personajes inolvidables que reflejan el ingenio y el espíritu criollo.', 'Don Dimas (escribano astuto), Fray Gómez (fraile milagroso), virreyes, damas coloniales, devotos del Señor de los Milagros, nobles y pícaros limeños.', 'Nacional');
+
+
+
+
+-- CAPÍTULO 1 (id_capitulo: 1, id_pregunta: 105-109)
+INSERT INTO preguntas (id_pregunta, id_libro, id_capitulo, numero_pregunta, enunciado, opcion_a, opcion_b, opcion_c, opcion_d, respuesta_correcta, puntaje) VALUES
+(105, 6, 1, 1, '¿Cuál era la profesión de Don Dimas?', 'Militar', 'Escribano', 'Comerciante', 'Fraile', 'B', 20),
+(106, 6, 1, 2, '¿Contra quién se enfrenta en el pleito?', 'Un noble', 'El diablo', 'El virrey', 'Otro escribano', 'B', 20),
+(107, 6, 1, 3, '¿Qué herramienta usa para ganar?', 'Hechicería', 'Astucia legal', 'Soborno', 'Milagros', 'B', 20),
+(108, 6, 1, 4, '¿Qué valor representa la historia?', 'El ingenio criollo', 'La obediencia', 'El miedo', 'La codicia', 'A', 20),
+(109, 6, 1, 5, '¿Qué reacción provoca el final?', 'Miedo', 'Diversión', 'Tristeza', 'Sorpresa amarga', 'B', 20);
+
+-- CAPÍTULO 2 (id_capitulo: 2, id_pregunta: 110-114)
+INSERT INTO preguntas (id_pregunta, id_libro, id_capitulo, numero_pregunta, enunciado, opcion_a, opcion_b, opcion_c, opcion_d, respuesta_correcta, puntaje) VALUES
+(110, 6, 2, 1, '¿Qué recibe la protagonista?', 'Una carta', 'Una visita espectral', 'Una dote', 'Un castigo del virrey', 'B', 20),
+(111, 6, 2, 2, '¿Qué anuncia el espectro?', 'Un viaje', 'Su muerte', 'Un milagro', 'Una boda', 'B', 20),
+(112, 6, 2, 3, '¿Qué buscó la familia para salvarla?', 'Médicos y confesores', 'Guerreros', 'El virrey', 'Comerciantes', 'A', 20),
+(113, 6, 2, 4, '¿Qué tema refleja la tradición?', 'La religiosidad', 'Las supersticiones coloniales', 'La picardía criolla', 'La política', 'B', 20),
+(114, 6, 2, 5, '¿Qué efecto produce en el lector?', 'Terror y reflexión', 'Alegría', 'Indiferencia', 'Tranquilidad', 'A', 20);
+
+-- CAPÍTULO 3 (id_capitulo: 3, id_pregunta: 115-119)
+INSERT INTO preguntas (id_pregunta, id_libro, id_capitulo, numero_pregunta, enunciado, opcion_a, opcion_b, opcion_c, opcion_d, respuesta_correcta, puntaje) VALUES
+(115, 6, 3, 1, '¿Quién es el protagonista?', 'Un virrey', 'Fray Gómez', 'Don Dimas', 'Un noble', 'B', 20),
+(116, 6, 3, 2, '¿Qué transforma el fraile?', 'Una piedra', 'Un alacrán', 'Una vela', 'Un libro', 'B', 20),
+(117, 6, 3, 3, '¿Por qué realiza el milagro?', 'Por ambición', 'Por caridad', 'Por miedo', 'Por poder', 'B', 20),
+(118, 6, 3, 4, '¿Qué virtud encarna Fray Gómez?', 'Astucia', 'Fe y humildad', 'Orgullo', 'Codicia', 'B', 20),
+(119, 6, 3, 5, '¿Qué enseña la tradición?', 'El valor del dinero', 'La fuerza de la fe', 'El respeto a la nobleza', 'El temor a los animales', 'B', 20);
+
+-- CAPÍTULO 4 (id_capitulo: 4, id_pregunta: 120-124)
+INSERT INTO preguntas (id_pregunta, id_libro, id_capitulo, numero_pregunta, enunciado, opcion_a, opcion_b, opcion_c, opcion_d, respuesta_correcta, puntaje) VALUES
+(120, 6, 4, 1, '¿Qué condición puso el padre?', 'Que se casaran en secreto', 'Que la dote fuera solo una camisa', 'Que el novio se hiciera rico', 'Que pidieran permiso al virrey', 'B', 20),
+(121, 6, 4, 2, '¿Cómo resultó la camisa?', 'Muy sencilla', 'Una prenda lujosa', 'Una camisa vieja', 'Un regalo religioso', 'B', 20),
+(122, 6, 4, 3, '¿Qué demuestra el padre con su acción?', 'Obediencia', 'Astucia criolla', 'Codicia', 'Orgullo', 'B', 20),
+(123, 6, 4, 4, '¿Por qué es famosa esta tradición?', 'Por su tono trágico', 'Por su humor e ingenio', 'Por ser religiosa', 'Por criticar al virrey', 'B', 20),
+(124, 6, 4, 5, '¿Qué valor transmite la historia?', 'La obediencia ciega', 'La picardía para romper reglas', 'La nobleza', 'La riqueza', 'B', 20);
+
+-- CAPÍTULO 5 (id_capitulo: 5, id_pregunta: 125-129)
+INSERT INTO preguntas (id_pregunta, id_libro, id_capitulo, numero_pregunta, enunciado, opcion_a, opcion_b, opcion_c, opcion_d, respuesta_correcta, puntaje) VALUES
+(125, 6, 5, 1, '¿Qué imagen central aparece en la tradición?', 'Virgen del Carmen', 'Señor de los Milagros', 'San Martín de Porres', 'Santo Domingo', 'B', 20),
+(126, 6, 5, 2, '¿Qué práctica describe?', 'Juegos populares', 'Procesiones religiosas', 'Fiestas militares', 'Bailes criollos', 'B', 20),
+(127, 6, 5, 3, '¿Qué sentimiento unía a los limeños?', 'Orgullo militar', 'Devoción y fe', 'Diversión', 'Indiferencia', 'B', 20),
+(128, 6, 5, 4, '¿Qué ejemplo inspiró a la gente?', 'Un devoto que cumplió su promesa', 'El virrey en la procesión', 'Un noble donando dinero', 'Un comerciante rico', 'A', 20),
+(129, 6, 5, 5, '¿Qué simboliza el Nazareno?', 'La riqueza colonial', 'La unidad del pueblo', 'El poder virreinal', 'La obediencia', 'B', 20);
+
+
+

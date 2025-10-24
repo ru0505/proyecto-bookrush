@@ -46,8 +46,9 @@ if (!empty($dni)) {
   <meta charset="UTF-8">
   <title>Book Rush - Biblioteca Interactiva</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=<?= time() ?>"> 
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sergio-trendy" rel="stylesheet">
+  <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
 
@@ -118,6 +119,10 @@ if (!empty($dni)) {
 </header>
 
 <main>
+  <section class="hero">
+    ¡Descubre el mágico mundo de la lectura!
+  </section>
+
   <div class="libros-grid">
   <?php if (!empty($libros)): ?>
     <?php foreach ($libros as $libro): 

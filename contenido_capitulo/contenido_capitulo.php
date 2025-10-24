@@ -2,22 +2,37 @@
 session_start();
 include '../conexion.php';
 
-$id_capitulo = $_GET['id_capitulo'] ?? null;
-$id_libro = $_GET['id_libro'] ?? null;
+// OBTENER LOS PARÁMETROS DE LA URL
+$id_capitulo = isset($_GET['id_capitulo']) ? intval($_GET['id_capitulo']) : 0;
+$id_libro = isset($_GET['id_libro']) ? intval($_GET['id_libro']) : 0;
 
-if (!$id_capitulo || !$id_libro) {
-  die("Error: Parámetros inválidos.");
+// Validar que existan los parámetros
+if ($id_capitulo <= 0 || $id_libro <= 0) {
+    die("Error: Parámetros inválidos.");
 }
 
-// Obtenemos datos del capítulo
-$stmt = $conn->prepare("SELECT titulo FROM capitulos WHERE id_capitulo = ? AND id_libro = ?");
+// Consulta a la base de datos (UNA SOLA VEZ)
+$stmt = $conn->prepare("SELECT titulo, contenido, glosario FROM capitulos WHERE id_capitulo = ? AND id_libro = ?");
 $stmt->bind_param("ii", $id_capitulo, $id_libro);
 $stmt->execute();
 $result = $stmt->get_result();
 $capitulo = $result->fetch_assoc();
 
 if (!$capitulo) {
-  die("Error: Capítulo no encontrado.");
+    die("Error: Capítulo no encontrado.");
+}
+
+// Procesar el glosario (suponiendo que viene en formato JSON o separado por comas)
+$glosario_items = [];
+if (!empty($capitulo['glosario'])) {
+    // Si está en JSON
+    $glosario_decode = json_decode($capitulo['glosario'], true);
+    if (json_last_error() === JSON_ERROR_NONE && is_array($glosario_decode)) {
+        $glosario_items = $glosario_decode;
+    } else {
+        // Si está separado por saltos de línea o comas
+        $glosario_items = array_filter(explode("\n", $capitulo['glosario']));
+    }
 }
 ?>
 
@@ -118,27 +133,22 @@ if (!$capitulo) {
     
     <div class="texto">
       <h2><?= htmlspecialchars($capitulo['titulo']) ?></h2>
-
-      <?php
-      // Aquí puedes hacer que el texto se cargue dinámicamente según el capítulo
-      // Por ejemplo:
-      switch ($id_capitulo) {
-        case 1:
-          echo "<p>Contenido del Capítulo 1...</p>";
-          break;
-        case 2:
-          echo "<p>Contenido del Capítulo 2...</p>";
-          break;
-        default:
-          echo "<p>Contenido pendiente...</p>";
-      }
-      ?>
+      <p><?= nl2br(htmlspecialchars($capitulo['contenido'] ?? 'Contenido pendiente...')) ?></p>
     </div>
   </div>
 
   <div class="acordeon">
     <h3 onclick="toggleGlosario()">Mostrar / Ocultar Glosario</h3>
     <div class="contenido-glosario" id="glosario">
+      <?php if (!empty($glosario_items)): ?>
+        <ul>
+          <?php foreach ($glosario_items as $item): ?>
+            <li><?= htmlspecialchars(trim($item)) ?></li>
+          <?php endforeach; ?>
+        </ul>
+      <?php else: ?>
+        <p>No hay términos en el glosario.</p>
+      <?php endif; ?>
     </div>
   </div>
 

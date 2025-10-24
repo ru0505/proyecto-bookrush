@@ -9,6 +9,7 @@ $dni = $_SESSION['dni'] ?? null;
 <head>
   <meta charset="UTF-8">
   <title>Book Rush</title>
+  <link href="https://fonts.cdnfonts.com/css/sergio-trendy" rel="stylesheet">
 </head>
 <body>
   <header>

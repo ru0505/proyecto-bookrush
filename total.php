@@ -7,9 +7,9 @@ if (!isset($_SESSION['usuario'])) {
     exit;
 }
 
-$dni = $_SESSION['usuario']['DNI'];
-$id_libro = isset($_GET['libro']) ? intval($_GET['libro']) : 1;
-$capitulo = isset($_GET['capitulo']) ? intval($_GET['capitulo']) : 1;
+$dni = $_SESSION['dni'];
+$id_libro = isset($_GET['id_libro']) ? intval($_GET['id_libro']) : 1;
+$capitulo = isset($_GET['id_capitulo']) ? intval($_GET['id_capitulo']) : 1;
 
 // Obtener puntaje total del usuario para este libro y capítulo
 $stmt = $conn->prepare("
@@ -54,7 +54,7 @@ body { font-family: Arial, sans-serif; text-align: center; background: #fcf2c0; 
     <a class="boton" href="pregunta/preguntas_frank.php?capitulo=<?= $capitulo + 1 ?>">➡️ Siguiente capítulo</a>
 <?php endif; ?>
 
-<a class="boton" href="trivia/reiniciar_capitulo.php?capitulo=<?= $capitulo ?>&libro=<?= $id_libro ?>">🔄 Reintentar capítulo</a>
-<a class="boton" href="pregunta/preguntas_frank.php">🏠 Volver al menú de capítulos</a>
+<a class="boton" href="reiniciar_capitulo.php?id_capitulo=<?= $capitulo ?>&id_libro=<?= $id_libro ?>">🔄 Reintentar capítulo</a>
+<a class="boton" href="mapa_capitulos/mapa_capitulos.php?id_libro=<?= $id_libro ?>">🏠 Volver al menú de capítulos</a>
 </body>
 </html>

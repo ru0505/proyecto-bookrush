@@ -1,8 +1,8 @@
 <?php
 $host = "localhost";
 $user = "root";
-$pass = "root"; // Contraseña de MAMP
-$db = "bookrush"; 
+$pass = "";
+$db = "proyecto"; 
 
 $conn = new mysqli($host, $user, $pass, $db);
 

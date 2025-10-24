@@ -28,6 +28,7 @@ $libro = $result->fetch_assoc();
   <meta charset="UTF-8">
   <title><?= htmlspecialchars($libro['titulo']) ?> - Detalle</title>
 
+  <link href="https://fonts.cdnfonts.com/css/sergio-trendy" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
@@ -43,7 +44,7 @@ $libro = $result->fetch_assoc();
       color: #000000;
       font-size: 2.5em;
       margin-bottom: 40px;
-      font-family: 'Fredoka', sans-serif;
+      font-family: 'Sergio Trendy', sans-serif;
     }
 
     .detalle-container {
