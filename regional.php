@@ -1,6 +1,17 @@
 <?php
 session_start();
+
+if (!isset($_SESSION['dni'])) {
+    $_SESSION['dni'] = '';
+}
+if (!isset($_SESSION['usuario'])) {
+    $_SESSION['usuario'] = '';
+}
+
 include 'conexion.php';
+
+$dni = $_SESSION['dni'];
+$usuario = $_SESSION['usuario'] ?? '';
 
 $libros = [
   1 => [
@@ -26,101 +37,87 @@ $libros = [
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <link href="https://fonts.cdnfonts.com/css/sergio-trendy" rel="stylesheet">
-
   <meta charset="UTF-8">
-  <title>Literatura Regional</title>
-  <style>
-    body {
-      background: linear-gradient(to right, #5147aaff, #69aae7ff);
-      color: #1e334e;
-      font-family: 'Inter', sans-serif;
-      padding: 40px;
-      font-family: 'Sergio Trendy', sans-serif;
-    }
-    .libros-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr); /* ← Aquí está el cambio */
-      gap: 20px;
-      margin-top: 20px;
-    }
-
-
-    .libro {
-      background-color: #fcfcfcff;
-      padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(30, 51, 78, 0.1);
-      text-align: center;
-    }
-
-    .libro img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-
-    .libro h3 {
-      font-size: 1.2em;
-      margin: 10px 0 5px;
-      color: #1e334e;
-    }
-
-    .libro p {
-      font-size: 0.95em;
-      color: #333;
-    }
-
-    .libro button {
-      margin-top: 10px;
-      background-color: #473783ff;
-      color: #ffffffff;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .libro button:hover {
-      background-color: #282b3bff;
-    }
-    .libro {
-      transition: transform 0.3s ease;
-    }
-
-    .libro:hover {
-      transform: scale(1.05);
-    }
-    h1 {
-      color: #000000ff;
-      text-align: center;
-      font-family: 'Fredoka', sans-serif;
-    }
-    .volver {
-      text-align: center;
-      margin-top: 40px;
-    }
-    .volver a {
-      background-color:rgba(21, 24, 187, 1);
-      color: white;
-      text-decoration: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-weight: bold;
-    }
-    .volver a:hover {
-      background-color: #252c55ff;
-    }
-  </style>
+  <title>Literatura Regional - Book Rush</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sergio-trendy" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Literatura Regional</h1>
+
+<div class="top-bar">
+  <div style="display: flex; align-items: center;">
+    <img src="imagenes/LOGO_BOOK_RUSH.png" alt="Logo Book Rush" style="height: 50px; margin-right: 10px;">
+    <h1>Book Rush</h1>
+  </div>
+
+  <div class="top-icons">
+    <?php if ($usuario): ?>
+      <!-- Perfil del usuario -->
+      <a href="perfil.php" style="text-decoration: none;">
+        <div class="icon-container" style="cursor: pointer;">
+          <img src="imagenes/usuario.png" alt="Usuario" class="icon">
+          <div class="tooltip">
+            <strong>Usuario:</strong> <?= htmlspecialchars($usuario) ?><br>
+            <strong>DNI:</strong> <?= htmlspecialchars($dni) ?><br>
+          </div>
+        </div>
+      </a>
+
+      <!-- Puntaje -->
+      <div class="icon-container">
+        <img src="imagenes/estrella.png" alt="Puntaje" class="icon">
+        <div class="tooltip">
+          <strong>Total de puntos:</strong><br>
+          <ul>
+            <?php
+              $stmt = $conn->prepare("SELECT CAPITULO, SUM(PUNTAJE) as total FROM puntajes WHERE DNI = ? GROUP BY CAPITULO");
+              $stmt->bind_param("s", $dni);
+              $stmt->execute();
+              $res = $stmt->get_result();
+              while ($fila = $res->fetch_assoc()) {
+                echo "<li>Capítulo " . htmlspecialchars($fila['CAPITULO']) . ": " . $fila['total'] . " pts</li>";
+              }
+            ?>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Cerrar sesión -->
+      <div class="icon-container" style="cursor: pointer;">
+        <img src="imagenes/puerta.png" alt="Cerrar sesión" class="icon" onclick="mostrarConfirmacion()">
+      </div>
+    <?php else: ?>
+      <a href="login.php" class="boton-top">Iniciar Sesión</a>
+      <a href="registro.php" class="boton-top">Registrarse</a>
+    <?php endif; ?>
+  </div>
+</div>
+
+<!-- Modal de confirmación -->
+<div id="confirmacion-modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+  <div style="background: white; padding: 20px; border-radius: 10px; width: 300px; max-width: 80%; margin: 100px auto; text-align: center;">
+    <p>¿Estás seguro de que deseas cerrar sesión?</p>
+    <button onclick="cerrarSesion()" style="margin: 5px; padding: 8px 16px; background-color: #d85e39; color: white; border: none; border-radius: 5px;">Sí</button>
+    <button onclick="cerrarModal()" style="margin: 5px; padding: 8px 16px; background-color: #1e334e; color: white; border: none; border-radius: 5px;">Cancelar</button>
+  </div>
+</div>
+
+<header>
+  <nav>
+    <a href="nacional.php">Literatura Nacional</a>
+    <a href="regional.php" class="active">Literatura Regional</a>
+    <a href="universal.php">Literatura Universal</a>
+  </nav>
+</header>
+
+<main>
+  <h2 style="text-align: center; margin-bottom: 20px;">Literatura Regional</h2>
   <div class="libros-grid">
     <?php foreach ($libros as $libro): ?>
       <div class="libro">
-        <img src="platos/<?= htmlspecialchars($libro['imagen']) ?>" alt="<?= htmlspecialchars($libro['nombre']) ?>">
+        <img src="imagenes/<?= htmlspecialchars($libro['imagen']) ?>" alt="<?= htmlspecialchars($libro['nombre']) ?>">
         <h3><?= htmlspecialchars($libro['nombre']) ?></h3>
         <p><?= htmlspecialchars($libro['descripcion']) ?></p>
         <a href="<?= htmlspecialchars($libro['archivo']) ?>">
@@ -129,8 +126,23 @@ $libros = [
       </div>
     <?php endforeach; ?>
   </div>
-  <div class="volver">
-    <a href="index.php">← Volver a la pagina principal</a>
-  </div>
+</main>
+
+<footer>
+  <p>&copy; 2025 Book Rush. Todos los derechos reservados.</p>
+</footer>
+
+<script>
+  function mostrarConfirmacion() {
+    document.getElementById('confirmacion-modal').style.display = 'block';
+  }
+  function cerrarModal() {
+    document.getElementById('confirmacion-modal').style.display = 'none';
+  }
+  function cerrarSesion() {
+    window.location.href = 'logout.php';
+  }
+</script>
+
 </body>
 </html>
