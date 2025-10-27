@@ -66,89 +66,132 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="UTF-8">
   <title>Pregunta <?= $numero_pregunta ?> - Capítulo <?= $id_capitulo ?></title>
-  <link rel="stylesheet" href="css/styles.css"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin:0; padding:0 }
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background: linear-gradient(135deg, #353346ff 0%, #2a2a3e 50%, #1e1e2e 100%) fixed;
+      color: #fff;
+      min-height: 100vh;
+      padding: 130px 20px 40px;
+    }
+
+    .top-bar {
+      width: 100%;
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
+      padding: 25px 30px;
+      display:flex; align-items:center; justify-content:space-between;
+      position: fixed; top:0; left:0; z-index:1100;
+      box-shadow:0 8px 32px rgba(30,58,138,0.3); backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      min-height:100px;
+    }
+    .top-bar h1{ font-size:35px; color:#ff8c42; text-shadow:0 2px 10px rgba(255,140,66,0.45); margin:0 }
+
+    .container { max-width:1100px; margin:0 auto }
+
+    .timer { text-align:center; color:#ff8c42; font-weight:700; margin-bottom:14px; font-size:1.2em }
+    .pregunta { text-align:center; font-size:1.3em; margin: 8px 0 22px }
+
+    .opciones { display:flex; gap:18px; justify-content:center; flex-wrap:wrap }
+    .opcion {
+      background:#ffd265; color:#1e334e; border:3px solid #213547; border-radius:12px;
+      padding:18px 30px; min-width: 220px; font-weight:700; cursor:pointer; font-size:1em;
+      transition: transform .15s ease, box-shadow .15s ease; text-align:left;
+    }
+    .opcion:hover { transform: translateY(-4px); box-shadow:0 10px 20px rgba(0,0,0,0.15) }
+
+    #resultado { text-align:center; margin-top:20px; font-weight:800 }
+
+    @media (max-width:900px){ .opcion{ min-width: 100%; text-align:center } .container{ padding:0 12px } }
+  </style>
 </head>
 <body>
 
-<div id="timer">Tiempo: 15 segundos</div>
-<div class="pregunta"><?= $numero_pregunta ?>. <?= htmlspecialchars($pregunta['enunciado']) ?></div>
+  <div class="top-bar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <img src="../imagenes/LOGO_BOOK_RUSH.png" alt="Logo" style="height:44px">
+      <h1>Book Rush</h1>
+    </div>
+  </div>
 
-<form id="form-respuesta">
-<?php foreach ($opciones as $letra => $texto): ?>
-  <button type="button" class="opcion" data-respuesta="<?= $letra ?>">
-    <?= $letra ?>) <?= htmlspecialchars($texto) ?>
-  </button>
-<?php endforeach; ?>
-</form>
+  <div class="container">
+    <div class="timer" id="timer">Tiempo: 15 segundos</div>
+    <div class="pregunta"><?= $numero_pregunta ?>. <?= htmlspecialchars($pregunta['enunciado']) ?></div>
 
-<div id="resultado"></div>
+    <div class="opciones">
+    <?php foreach ($opciones as $letra => $texto): ?>
+      <button type="button" class="opcion" data-respuesta="<?= $letra ?>">
+        <?= $letra ?>) <?= htmlspecialchars($texto) ?>
+      </button>
+    <?php endforeach; ?>
+    </div>
 
-<script>
-const botones = document.querySelectorAll(".opcion");
-const resultado = document.getElementById("resultado");
-let respondido = false;
-let tiempo = 15;
+    <div id="resultado"></div>
+  </div>
 
-// Timer
-const countdown = setInterval(() => {
-    tiempo--;
-    document.getElementById("timer").textContent = "Tiempo: " + tiempo + " segundos";
-    if (tiempo <= 0 && !respondido) {
-        respondido = true;
-        clearInterval(countdown);
-        enviarRespuesta("");
-    }
-}, 1000);
+  <script>
+  const botones = document.querySelectorAll(".opcion");
+  const resultado = document.getElementById("resultado");
+  let respondido = false;
+  let tiempo = 15;
 
-botones.forEach(boton => {
-    boton.addEventListener("click", () => {
-        if (respondido) return;
-        respondido = true;
-        clearInterval(countdown);
-        enviarRespuesta(boton.dataset.respuesta);
-    });
-});
+  const countdown = setInterval(() => {
+      tiempo--;
+      document.getElementById("timer").textContent = "Tiempo: " + tiempo + " segundos";
+      if (tiempo <= 0 && !respondido) {
+          respondido = true;
+          clearInterval(countdown);
+          enviarRespuesta("");
+      }
+  }, 1000);
 
-function enviarRespuesta(respuesta) {
-    fetch("", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "respuesta=" + encodeURIComponent(respuesta)
-    })
-    .then(res => {
-        if (!res.ok) {
-            throw new Error('Error en la respuesta del servidor');
-        }
-        return res.json();
-    })
-    .then(data => {
-        if (data.status === "ok") {
-            if (data.es_correcta) {
-                resultado.textContent = "✅ ¡Correcto!";
-                resultado.style.color = "green";
-            } else if (respuesta === "") {
-                resultado.textContent = "⏰ Tiempo agotado.";
-                resultado.style.color = "gray";
-            } else {
-                resultado.textContent = "❌ Incorrecto.";
-                resultado.style.color = "red";
-            }
+  botones.forEach(boton => {
+      boton.addEventListener("click", () => {
+          if (respondido) return;
+          respondido = true;
+          clearInterval(countdown);
+          enviarRespuesta(boton.dataset.respuesta);
+      });
+  });
 
-            setTimeout(() => {
-                if (data.siguiente > 0) {
-                    window.location.href = "?id_libro=<?= $id_libro ?>&id_capitulo=<?= $id_capitulo ?>&pregunta=" + data.siguiente;
-                } else {
-                    window.location.href = "../total.php?id_libro=<?= $id_libro ?>&id_capitulo=<?= $id_capitulo ?>";
-                }
-            }, 1500);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert("Error al conectar con el servidor: " + error.message);
-    });
-}
-</script>
+  function enviarRespuesta(respuesta) {
+      fetch("", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: "respuesta=" + encodeURIComponent(respuesta)
+      })
+      .then(res => {
+          if (!res.ok) throw new Error('Error en la respuesta del servidor');
+          return res.json();
+      })
+      .then(data => {
+          if (data.status === "ok") {
+              if (data.es_correcta) {
+                  resultado.textContent = "✅ ¡Correcto!";
+                  resultado.style.color = "#2d8f4a";
+              } else if (respuesta === "") {
+                  resultado.textContent = "⏰ Tiempo agotado.";
+                  resultado.style.color = "#6c757d";
+              } else {
+                  resultado.textContent = "❌ Incorrecto.";
+                  resultado.style.color = "#c0392b";
+              }
+
+              setTimeout(() => {
+                  if (data.siguiente > 0) {
+                      window.location.href = "?id_libro=<?= $id_libro ?>&id_capitulo=<?= $id_capitulo ?>&pregunta=" + data.siguiente;
+                  } else {
+                      window.location.href = "../total.php?id_libro=<?= $id_libro ?>&id_capitulo=<?= $id_capitulo ?>";
+                  }
+              }, 1200);
+          }
+      })
+      .catch(error => { console.error('Error:', error); alert("Error al conectar con el servidor: " + error.message); });
+  }
+  </script>
 
 </body>
 </html>

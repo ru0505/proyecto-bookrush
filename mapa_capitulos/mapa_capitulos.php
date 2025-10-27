@@ -26,99 +26,266 @@ $capitulos = $stmtCap->get_result()->fetch_all(MYSQLI_ASSOC);
 $completed = $_SESSION['completed'] ?? [];
 $startIndex = (!empty($completed) ? max($completed) : 1) - 1;
 ?>
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8">
     <title>Capítulos - <?= htmlspecialchars($nombre_libro) ?></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* === Mantiene todo tu CSS original sin cambios === */
-        :root{--bg1:#1a0f2e;--bg2:#0f0816;--accent:#8b1538;--gold:#d4af37;--shadow:rgba(139,21,56,0.3)}
-        body{
-            font-family:Arial,Helvetica,sans-serif;
-            background:
-                linear-gradient(180deg,rgba(26,15,46,0.85) 0%, rgba(15,8,22,0.9) 100%),
-                url('../imagenes/castillo.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            color:#fff;
-            margin:0;
-            padding:18px;
-            position:relative;
-            overflow-x:hidden
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 20% 80%, rgba(139,21,56,0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(139,21,56,0.08) 0%, transparent 50%);pointer-events:none;z-index:1}
-        .header{max-width:1100px;margin:0 auto;padding:8px 12px 18px;display:flex;align-items:center;gap:12px;position:relative;z-index:10}
-        .back-btn{
-            display:inline-flex;align-items:center;gap:8px;
-            background:rgba(139,21,56,0.3);
-            backdrop-filter:blur(10px);
-            color:#fff;
-            padding:12px 20px;
-            border-radius:25px;
-            text-decoration:none;
-            border:2px solid rgba(139,21,56,0.4);
-            transition:all 0.3s ease;
-            font-weight:600;
-            font-size:14px;
-            letter-spacing:0.5px;
-            position:absolute;
-            left:-120px;
-            text-transform:uppercase
-        }
-        .back-btn:hover{background:rgba(139,21,56,0.5);border-color:rgba(139,21,56,0.7);transform:translateY(-2px);box-shadow:0 8px 20px rgba(139,21,56,0.3)}
-        .title{flex:1;text-align:center;font-size:24px;color:#f3e6ff;text-shadow:0 2px 10px rgba(139,21,56,0.5);font-weight:300;letter-spacing:1px}
 
-        .stage{max-width:1200px;margin:0 auto;position:relative;z-index:5}
-        .map-wrap{position:relative;height:950px;margin:8px auto 50px;max-width:950px;border-radius:20px;background:rgba(26,15,46,0.2);backdrop-filter:blur(20px);border:1px solid rgba(139,21,56,0.2);box-shadow:0 20px 40px rgba(0,0,0,0.3);padding:50px}
-        .coin{position:absolute;display:flex;align-items:center;justify-content:center;width:65px;height:65px;border-radius:50%;background:linear-gradient(135deg,#666,#444);color:#aaa;font-weight:800;font-size:15px;text-decoration:none;box-shadow:0 8px 20px rgba(0,0,0,.4), 0 0 15px rgba(102,102,102,0.2);transition:all .18s ease;z-index:3;border:3px solid rgba(102,102,102,0.6)}
-        .coin.blocked{background:linear-gradient(135deg,#555,#333);border-color:rgba(85,85,85,0.6);cursor:not-allowed}
-        .coin.playable{background:linear-gradient(135deg,#ff8c42,#d46a2a);color:#fff;border-color:rgba(255,140,66,0.8);box-shadow:0 8px 20px rgba(0,0,0,.4), 0 0 15px rgba(255,140,66,0.4)}
-        .coin.completed{background:linear-gradient(135deg,#4a9b4e,#2d5a30);color:#fff;border-color:rgba(74,155,78,0.8);box-shadow:0 8px 20px rgba(0,0,0,.4), 0 0 15px rgba(74,155,78,0.4)}
-        .final-level{background:linear-gradient(135deg,#8b1538,#5d0e24) !important;border-color:rgba(139,21,56,0.8) !important;box-shadow:0 15px 40px rgba(0,0,0,.7), 0 0 35px rgba(139,21,56,0.7) !important;width:85px !important;height:85px !important;font-size:20px !important;border-width:4px !important}
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #353346ff 0%, #2a2a3e 50%, #1e1e2e 100%) fixed;
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 130px 20px 40px;
+            color: #fff;
+        }
+
+        .top-bar {
+            width: 100%;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
+            background-size: 200% 200%;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1100;
+            box-shadow: 0 8px 32px rgba(30, 58, 138, 0.3);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideDown 0.8s ease-out, topBarMove 6s ease-in-out infinite;
+            overflow: hidden;
+            min-height: 100px;
+        }
+
+        @keyframes slideDown {
+            0% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes topBarMove {
+            0%, 100% { 
+                background-position: 0% 50%;
+                transform: translateY(0px);
+            }
+            25% { 
+                background-position: 100% 50%;
+                transform: translateY(-1px);
+            }
+            50% { 
+                background-position: 0% 100%;
+                transform: translateY(0px);
+            }
+            75% { 
+                background-position: 100% 0%;
+                transform: translateY(1px);
+            }
+        }
+
+        .top-bar h1 {
+            font-size: 35px;
+            color: #ff8c42;
+            font-family: 'Fredoka', sans-serif;
+            text-shadow: 0 2px 10px rgba(255, 140, 66, 0.5);
+            animation: glowTitle 3s ease-in-out infinite alternate;
+            margin: 0;
+        }
+
+        @keyframes glowTitle {
+            0% { 
+                color: #ff8c42;
+                text-shadow: 0 2px 10px rgba(255, 140, 66, 0.5), 0 0 20px rgba(255, 140, 66, 0.3);
+            }
+            100% { 
+                color: #ffab70;
+                text-shadow: 0 2px 15px rgba(255, 171, 112, 0.8), 0 0 30px rgba(255, 171, 112, 0.5);
+            }
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .page-title {
+            text-align: center;
+            color: white;
+            font-size: 2.2em;
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            background: #ff8c42;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-bottom: 20px;
+            /* Position fixed so it can stick to the left edge of the viewport */
+            position: fixed;
+            left: 12px;
+            top: 120px; /* placed under the top-bar (top-bar ~100px) */
+            z-index: 1110;
+        }
+
+        .back-btn:hover {
+            background: #e67a35;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 140, 66, 0.4);
+        }
+
+        .capitulos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .capitulo-card {
+            background: linear-gradient(135deg, #666, #444);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #aaa;
+            font-weight: 700;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            border: 3px solid rgba(102,102,102,0.6);
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .capitulo-card.blocked {
+            background: linear-gradient(135deg, #555, #333);
+            border-color: rgba(85,85,85,0.6);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .capitulo-card.playable {
+            background: linear-gradient(135deg, #ff8c42, #d46a2a);
+            color: white;
+            border-color: rgba(255,140,66,0.8);
+            box-shadow: 0 8px 20px rgba(255,140,66,0.4);
+        }
+
+        .capitulo-card.completed {
+            background: linear-gradient(135deg, #4a9b4e, #2d5a30);
+            color: white;
+            border-color: rgba(74,155,78,0.8);
+            box-shadow: 0 8px 20px rgba(74,155,78,0.4);
+        }
+
+        .capitulo-card:hover:not(.blocked) {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+        }
+
+        .capitulo-numero {
+            font-size: 1.8em;
+            font-weight: 800;
+        }
+
+        .capitulo-titulo {
+            font-size: 0.85em;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .mensaje-vacio {
+            text-align: center;
+            color: white;
+            font-size: 1.3em;
+            padding: 60px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .capitulos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .capitulo-card {
+                min-height: 100px;
+                padding: 15px;
+            }
+            /* On small screens move the button a bit lower and closer to the edge */
+            .back-btn {
+                left: 8px;
+                top: 90px;
+                padding: 10px 18px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <a class="back-btn" href="../detalle_libros/detalle_libro.php?id=<?= $id_libro ?>" title="Volver al libro">Atrás</a>
-        <div class="title">Capítulos de <?= htmlspecialchars($nombre_libro) ?></div>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div style="display: flex; align-items: center;">
+            <img src="../imagenes/LOGO_BOOK_RUSH.png" alt="Logo Book Rush" style="height: 50px; margin-right: 10px;">
+            <h1>Book Rush</h1>
+        </div>
     </div>
 
-    <div class="stage">
-        <div class="map-wrap">
-            <?php
-            if (empty($capitulos)) {
-                echo "<p style='text-align:center;color:#fff;font-size:18px;margin-top:200px;'>📚 Este libro aún no tiene capítulos disponibles.</p>";
-            } else {
-                // Posiciones aproximadas en espiral o zig-zag (simplificadas)
-                $x = 500; $y = 450;
-                $step = 70;
-                $dir = 1;
+    <div class="container">
+        <a href="../detalle_libros/detalle_libro.php?id=<?= $id_libro ?>" class="back-btn">← Volver al libro</a>
+        
+        <h1 class="page-title" style="margin-top: 60px;">Capítulos de <?= htmlspecialchars($nombre_libro) ?></h1>
 
-                foreach ($capitulos as $index => $cap) {
+        <?php if (empty($capitulos)): ?>
+            <div class="mensaje-vacio">
+                📚 Este libro aún no tiene capítulos disponibles.
+            </div>
+        <?php else: ?>
+            <div class="capitulos-grid">
+                <?php foreach ($capitulos as $index => $cap): 
                     $estado = "blocked";
-                    if (in_array($cap['id_capitulo'], $completed)) $estado = "completed";
-                    elseif ($index == $startIndex) $estado = "playable";
-
-                    echo "<a href='../contenido_capitulo/contenido_capitulo.php?id_capitulo={$cap['id_capitulo']}&id_libro={$id_libro}' 
-                            class='coin {$estado}' 
-                            style='left:{$x}px; top:{$y}px'>
-                            <span class='num'>{$cap['id_capitulo']}</span>
-                        </a>";
-
-                    // mover coordenadas
-                    $x += $step * $dir;
-                    if ($x > 850 || $x < 200) {
-                        $dir *= -1;
-                        $y += 90;
+                    if (in_array($cap['id_capitulo'], $completed)) {
+                        $estado = "completed";
+                    } elseif ($index == $startIndex) {
+                        $estado = "playable";
                     }
-                }
-            }
-            ?>
-        </div>
+                    // Mostrar solo el título limpio dentro del box: quitar prefijos como "Capítulo 1"
+                    $displayTitle = preg_replace('/^\s*capitu?lo\s*\d+\s*/iu', '', $cap['titulo']);
+                ?>
+                    <a href="../contenido_capitulo/contenido_capitulo.php?id_capitulo=<?= $cap['id_capitulo'] ?>&id_libro=<?= $id_libro ?>" 
+                       class="capitulo-card <?= $estado ?>">
+                        <div class="capitulo-numero"><?= $cap['id_capitulo'] ?></div>
+                        <div class="capitulo-titulo"><?= htmlspecialchars($displayTitle) ?></div>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </body>
 </html>
