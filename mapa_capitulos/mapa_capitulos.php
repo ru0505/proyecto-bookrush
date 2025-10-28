@@ -4,7 +4,6 @@ include '../conexion.php';
 
 // Obtenemos el id del libro desde la URL
 $id_libro = isset($_GET['id_libro']) ? intval($_GET['id_libro']) : 0;
-
 if ($id_libro <= 0) {
     header("Location: ../index.php");
     exit;
@@ -113,8 +112,31 @@ $startIndex = (!empty($completed) ? max($completed) : 1) - 1;
             }
         }
 
+        /* Botón Volver en la barra superior derecha */
+        .btn-volver-top {
+            background: #ff8c42;
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.2em;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            transition: all 0.3s ease;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(255, 140, 66, 0.4);
+        }
+
+        .btn-volver-top:hover {
+            background: #e67a35;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 140, 66, 0.6);
+        }
+
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
             position: relative;
         }
@@ -126,97 +148,100 @@ $startIndex = (!empty($completed) ? max($completed) : 1) - 1;
             margin-bottom: 30px;
         }
 
-        .back-btn {
-            background: #ff8c42;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1em;
-            text-decoration: none;
-            font-family: 'Fredoka', sans-serif;
-            transition: all 0.3s ease;
-            display: inline-block;
-            margin-bottom: 20px;
-            /* Position fixed so it can stick to the left edge of the viewport */
-            position: fixed;
-            left: 12px;
-            top: 120px; /* placed under the top-bar (top-bar ~100px) */
-            z-index: 1110;
-        }
-
-        .back-btn:hover {
-            background: #e67a35;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 140, 66, 0.4);
-        }
-
+        /* Grid responsive que se adapta a cualquier cantidad de capítulos */
         .capitulos-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 20px;
-            padding: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 25px;
+            padding: 30px;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
         }
 
         .capitulo-card {
-            background: linear-gradient(135deg, #666, #444);
+            background: linear-gradient(135deg, #ff8c42, #e67a35);
             border-radius: 12px;
-            padding: 20px;
+            padding: 30px 20px;
             text-align: center;
             text-decoration: none;
-            color: #aaa;
+            color: white;
             font-weight: 700;
             font-size: 1.1em;
             transition: all 0.3s ease;
-            border: 3px solid rgba(102,102,102,0.6);
-            min-height: 120px;
+            border: 3px solid rgba(255, 140, 66, 0.6);
+            min-height: 150px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Efecto hover azul como las tarjetas del index */
+        .capitulo-card:hover:not(.blocked) {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-color: rgba(59, 130, 246, 0.8);
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.5);
         }
 
         .capitulo-card.blocked {
-            background: linear-gradient(135deg, #555, #333);
-            border-color: rgba(85,85,85,0.6);
+            background: linear-gradient(135deg, #9ca3af, #6b7280);
+            border-color: rgba(156, 163, 175, 0.6);
             cursor: not-allowed;
             opacity: 0.6;
+            color: #e5e7eb;
+        }
+
+        .capitulo-card.blocked:hover {
+            transform: none;
+            box-shadow: none;
         }
 
         .capitulo-card.playable {
-            background: linear-gradient(135deg, #ff8c42, #d46a2a);
+            background: linear-gradient(135deg, #ff8c42, #e67a35);
             color: white;
-            border-color: rgba(255,140,66,0.8);
-            box-shadow: 0 8px 20px rgba(255,140,66,0.4);
+            border-color: rgba(255, 140, 66, 0.8);
+            box-shadow: 0 8px 20px rgba(255, 140, 66, 0.4);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                box-shadow: 0 8px 20px rgba(255, 140, 66, 0.4);
+            }
+            50% { 
+                box-shadow: 0 12px 30px rgba(255, 140, 66, 0.6);
+            }
         }
 
         .capitulo-card.completed {
-            background: linear-gradient(135deg, #4a9b4e, #2d5a30);
+            background: linear-gradient(135deg, #10b981, #059669);
             color: white;
-            border-color: rgba(74,155,78,0.8);
-            box-shadow: 0 8px 20px rgba(74,155,78,0.4);
+            border-color: rgba(16, 185, 129, 0.8);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
         }
 
-        .capitulo-card:hover:not(.blocked) {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+        .capitulo-card.completed:hover {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-color: rgba(59, 130, 246, 0.8);
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.5);
         }
 
         .capitulo-numero {
-            font-size: 1.8em;
+            font-size: 2.5em;
             font-weight: 800;
+            line-height: 1;
         }
 
         .capitulo-titulo {
-            font-size: 0.85em;
-            font-weight: 400;
-            opacity: 0.9;
+            font-size: 0.9em;
+            font-weight: 500;
+            opacity: 0.95;
+            line-height: 1.3;
         }
 
         .mensaje-vacio {
@@ -228,22 +253,62 @@ $startIndex = (!empty($completed) ? max($completed) : 1) - 1;
             border-radius: 15px;
         }
 
+        /* Responsive design mejorado */
+        @media (max-width: 1024px) {
+            .capitulos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 20px;
+            }
+        }
+
         @media (max-width: 768px) {
             .capitulos-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
                 gap: 15px;
-                padding: 15px;
+                padding: 20px;
             }
             
             .capitulo-card {
-                min-height: 100px;
+                min-height: 130px;
+                padding: 20px 15px;
+            }
+
+            .capitulo-numero {
+                font-size: 2em;
+            }
+
+            .capitulo-titulo {
+                font-size: 0.85em;
+            }
+
+            .btn-volver-top {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
+
+            .page-title {
+                font-size: 1.8em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .capitulos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 12px;
                 padding: 15px;
             }
-            /* On small screens move the button a bit lower and closer to the edge */
-            .back-btn {
-                left: 8px;
-                top: 90px;
-                padding: 10px 18px;
+
+            .capitulo-card {
+                min-height: 110px;
+                padding: 15px 10px;
+            }
+
+            .capitulo-numero {
+                font-size: 1.8em;
+            }
+
+            .capitulo-titulo {
+                font-size: 0.75em;
             }
         }
     </style>
@@ -255,20 +320,23 @@ $startIndex = (!empty($completed) ? max($completed) : 1) - 1;
             <img src="../imagenes/LOGO_BOOK_RUSH.png" alt="Logo Book Rush" style="height: 50px; margin-right: 10px;">
             <h1>Book Rush</h1>
         </div>
+        
+        <!-- Botón Volver en la parte superior derecha -->
+        <a href="../detalle_libros/detalle_libro.php?id=<?= $id_libro ?>" class="btn-volver-top">
+            ← Volver
+        </a>
     </div>
 
     <div class="container">
-        <a href="../detalle_libros/detalle_libro.php?id=<?= $id_libro ?>" class="back-btn">← Volver al libro</a>
+        <h1 class="page-title">Capítulos de <?= htmlspecialchars($nombre_libro) ?></h1>
         
-        <h1 class="page-title" style="margin-top: 60px;">Capítulos de <?= htmlspecialchars($nombre_libro) ?></h1>
-
         <?php if (empty($capitulos)): ?>
             <div class="mensaje-vacio">
                 📚 Este libro aún no tiene capítulos disponibles.
             </div>
         <?php else: ?>
             <div class="capitulos-grid">
-                <?php foreach ($capitulos as $index => $cap): 
+                <?php foreach ($capitulos as $index => $cap):
                     $estado = "blocked";
                     if (in_array($cap['id_capitulo'], $completed)) {
                         $estado = "completed";

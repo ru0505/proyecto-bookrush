@@ -35,7 +35,7 @@ $ultima_pregunta = (int)$stmt2->get_result()->fetch_assoc()['max_preg'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $respuesta = $_POST['respuesta'] ?? "";
     $correcta = ($respuesta === $pregunta['respuesta_correcta']);
-
+    
     if ($correcta) {
         $puntaje = $pregunta['puntaje'] ?? 20;
 
@@ -67,60 +67,270 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <title>Pregunta <?= $numero_pregunta ?> - Capítulo <?= $id_capitulo ?></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin:0; padding:0 }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0;
+    }
+    
     body {
       font-family: 'Fredoka', sans-serif;
       background: linear-gradient(135deg, #353346ff 0%, #2a2a3e 50%, #1e1e2e 100%) fixed;
+      background-attachment: fixed;
       color: #fff;
-      min-height: 100vh;
-      padding: 130px 20px 40px;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
     .top-bar {
       width: 100%;
       background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
-      padding: 25px 30px;
-      display:flex; align-items:center; justify-content:space-between;
-      position: fixed; top:0; left:0; z-index:1100;
-      box-shadow:0 8px 32px rgba(30,58,138,0.3); backdrop-filter: blur(10px);
-      border-bottom:1px solid rgba(255,255,255,0.08);
-      min-height:100px;
+      background-size: 200% 200%;
+      padding: 22px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 1100;
+      box-shadow: 0 8px 32px rgba(30, 58, 138, 0.3);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      animation: slideDown 0.8s ease-out, topBarMove 6s ease-in-out infinite;
+      flex-shrink: 0;
     }
-    .top-bar h1{ font-size:35px; color:#ff8c42; text-shadow:0 2px 10px rgba(255,140,66,0.45); margin:0 }
 
-    .container { max-width:1100px; margin:0 auto }
+    @keyframes slideDown {
+      0% { transform: translateY(-100%); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
 
-    .timer { text-align:center; color:#ff8c42; font-weight:700; margin-bottom:14px; font-size:1.2em }
-    .pregunta { text-align:center; font-size:1.3em; margin: 8px 0 22px }
+    @keyframes topBarMove {
+      0%, 100% { 
+        background-position: 0% 50%;
+      }
+      50% { 
+        background-position: 100% 50%;
+      }
+    }
 
-    .opciones { display:flex; gap:18px; justify-content:center; flex-wrap:wrap }
+    .top-bar h1 {
+      font-size: 30px;
+      color: #ff8c42;
+      font-family: 'Fredoka', sans-serif;
+      text-shadow: 0 2px 10px rgba(255, 140, 66, 0.5);
+      animation: glowTitle 3s ease-in-out infinite alternate;
+      margin: 0;
+    }
+
+    @keyframes glowTitle {
+      0% { 
+        color: #ff8c42;
+        text-shadow: 0 2px 10px rgba(255, 140, 66, 0.5), 0 0 20px rgba(255, 140, 66, 0.3);
+      }
+      100% { 
+        color: #ffab70;
+        text-shadow: 0 2px 15px rgba(255, 171, 112, 0.8), 0 0 30px rgba(255, 171, 112, 0.5);
+      }
+    }
+
+    .container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 25px;
+      max-width: 1150px;
+      margin: 0 auto;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    /* Timer */
+    .timer {
+      text-align: center;
+      color: #ff8c42;
+      font-weight: 700;
+      margin-bottom: 22px;
+      font-size: 2em;
+      text-shadow: 0 4px 15px rgba(255, 140, 66, 0.6);
+      animation: pulse 1s ease-in-out infinite;
+      background: rgba(255, 140, 66, 0.1);
+      padding: 15px 35px;
+      border-radius: 12px;
+      border: 2px solid rgba(255, 140, 66, 0.3);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* Pregunta */
+    .pregunta-card {
+      background: rgba(255, 255, 255, 0.95);
+      color: #2c3e50;
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      margin-bottom: 28px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .pregunta {
+      font-size: 1.5em;
+      font-weight: 600;
+      line-height: 1.4;
+      color: #1e3a8a;
+    }
+
+    /* Opciones */
+    .opciones {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      width: 100%;
+      max-width: 950px;
+    }
+
     .opcion {
-      background:#ffd265; color:#1e334e; border:3px solid #213547; border-radius:12px;
-      padding:18px 30px; min-width: 220px; font-weight:700; cursor:pointer; font-size:1em;
-      transition: transform .15s ease, box-shadow .15s ease; text-align:left;
+      background: linear-gradient(135deg, #ff8c42 0%, #ff7425 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 24px 30px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 1.2em;
+      transition: all 0.3s ease;
+      text-align: left;
+      box-shadow: 0 6px 20px rgba(255, 140, 66, 0.4);
+      font-family: 'Fredoka', sans-serif;
+      line-height: 1.4;
+      min-height: 95px;
+      display: flex;
+      align-items: center;
     }
-    .opcion:hover { transform: translateY(-4px); box-shadow:0 10px 20px rgba(0,0,0,0.15) }
 
-    #resultado { text-align:center; margin-top:20px; font-weight:800 }
+    .opcion:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(255, 140, 66, 0.6);
+      background: linear-gradient(135deg, #ff9d5c 0%, #ff8535 100%);
+    }
 
-    @media (max-width:900px){ .opcion{ min-width: 100%; text-align:center } .container{ padding:0 12px } }
+    .opcion:active {
+      transform: translateY(-2px) scale(0.98);
+    }
+
+    #resultado {
+      text-align: center;
+      margin-top: 20px;
+      font-weight: 800;
+      font-size: 2.2em;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2000;
+      min-width: 320px;
+    }
+
+    /* Indicador de progreso */
+    .progreso {
+      text-align: center;
+      color: #60a5fa;
+      font-size: 1.3em;
+      font-weight: 600;
+      margin-bottom: 18px;
+      text-shadow: 0 2px 8px rgba(96, 165, 250, 0.4);
+    }
+
+    @media (max-width: 900px) {
+      .opciones {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .opcion {
+        text-align: center;
+        padding: 20px 28px;
+        font-size: 1.05em;
+        min-height: 75px;
+      }
+
+      .pregunta-card {
+        padding: 25px 30px;
+      }
+
+      .pregunta {
+        font-size: 1.3em;
+      }
+
+      .timer {
+        font-size: 1.6em;
+        padding: 12px 25px;
+      }
+
+      #resultado {
+        font-size: 1.8em;
+        padding: 15px;
+        min-width: 280px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .timer {
+        font-size: 1.4em;
+        padding: 10px 20px;
+      }
+
+      .pregunta {
+        font-size: 1.15em;
+      }
+
+      .opcion {
+        font-size: 1em;
+        padding: 18px 22px;
+        min-height: 70px;
+      }
+
+      .progreso {
+        font-size: 1.1em;
+      }
+
+      .top-bar h1 {
+        font-size: 26px;
+      }
+    }
   </style>
 </head>
 <body>
 
   <div class="top-bar">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <img src="../imagenes/LOGO_BOOK_RUSH.png" alt="Logo" style="height:44px">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <img src="../imagenes/LOGO_BOOK_RUSH.png" alt="Logo" style="height: 48px;">
       <h1>Book Rush</h1>
     </div>
   </div>
 
   <div class="container">
-    <div class="timer" id="timer">Tiempo: 15 segundos</div>
-    <div class="pregunta"><?= $numero_pregunta ?>. <?= htmlspecialchars($pregunta['enunciado']) ?></div>
-
+    <div class="progreso">Pregunta <?= $numero_pregunta ?> de <?= $ultima_pregunta ?></div>
+    
+    <div class="timer" id="timer">Tiempo: 12 segundos</div>
+    
+    <div class="pregunta-card">
+      <div class="pregunta"><?= $numero_pregunta ?>. <?= htmlspecialchars($pregunta['enunciado']) ?></div>
+    </div>
+    
     <div class="opciones">
     <?php foreach ($opciones as $letra => $texto): ?>
       <button type="button" class="opcion" data-respuesta="<?= $letra ?>">
@@ -129,14 +339,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endforeach; ?>
     </div>
 
-    <div id="resultado"></div>
+    <div id="resultado" style="display: none;"></div>
   </div>
 
   <script>
   const botones = document.querySelectorAll(".opcion");
   const resultado = document.getElementById("resultado");
   let respondido = false;
-  let tiempo = 15;
+  let tiempo = 12;
 
   const countdown = setInterval(() => {
       tiempo--;
@@ -169,15 +379,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       })
       .then(data => {
           if (data.status === "ok") {
+              resultado.style.display = "block";
               if (data.es_correcta) {
                   resultado.textContent = "✅ ¡Correcto!";
-                  resultado.style.color = "#2d8f4a";
+                  resultado.style.color = "#2ecc71";
               } else if (respuesta === "") {
-                  resultado.textContent = "⏰ Tiempo agotado.";
-                  resultado.style.color = "#6c757d";
+                  resultado.textContent = "⏰ Tiempo agotado";
+                  resultado.style.color = "#95a5a6";
               } else {
-                  resultado.textContent = "❌ Incorrecto.";
-                  resultado.style.color = "#c0392b";
+                  resultado.textContent = "❌ Incorrecto";
+                  resultado.style.color = "#e74c3c";
               }
 
               setTimeout(() => {
@@ -186,10 +397,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   } else {
                       window.location.href = "../total.php?id_libro=<?= $id_libro ?>&id_capitulo=<?= $id_capitulo ?>";
                   }
-              }, 1200);
+              }, 1500);
           }
       })
-      .catch(error => { console.error('Error:', error); alert("Error al conectar con el servidor: " + error.message); });
+      .catch(error => { 
+          console.error('Error:', error); 
+          alert("Error al conectar con el servidor: " + error.message); 
+      });
   }
   </script>
 

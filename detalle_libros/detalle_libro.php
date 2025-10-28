@@ -109,6 +109,29 @@ $libro = $result->fetch_assoc();
       }
     }
 
+    /* Botón Volver en la barra superior derecha */
+    .btn-volver-top {
+      background: #ff8c42;
+      color: white;
+      border: none;
+      padding: 15px 35px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1.2em;
+      text-decoration: none;
+      font-family: 'Fredoka', sans-serif;
+      transition: all 0.3s ease;
+      display: inline-block;
+      box-shadow: 0 4px 15px rgba(255, 140, 66, 0.4);
+    }
+
+    .btn-volver-top:hover {
+      background: #e67a35;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(255, 140, 66, 0.6);
+    }
+
     .container {
       max-width: 1100px;
       margin: 0 auto;
@@ -165,48 +188,42 @@ $libro = $result->fetch_assoc();
       margin-top: 25px;
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 15px;
     }
 
+    /* Botones del box blanco - AZULES Y MÁS GRANDES */
     .botones a, .botones button {
-      background: #ff8c42;
+      background: #3b82f6;
       color: white;
       border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
+      padding: 18px 35px;
+      border-radius: 10px;
       cursor: pointer;
       font-weight: 600;
-      font-size: 1em;
+      font-size: 1.2em;
       text-decoration: none;
       font-family: 'Fredoka', sans-serif;
       transition: all 0.3s ease;
       display: inline-block;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
     }
 
     .botones a:hover, .botones button:hover {
-      background: #e67a35;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255, 140, 66, 0.4);
-    }
-
-    .btn-secondary {
-      background: #6c757d !important;
-    }
-
-    .btn-secondary:hover {
-      background: #5a6268 !important;
-      box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+      background: #2563eb;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
     }
 
     .btn-disabled {
-      background: #ccc !important;
+      background: #9ca3af !important;
       cursor: not-allowed;
       opacity: 0.6;
     }
 
     .btn-disabled:hover {
       transform: none;
-      box-shadow: none;
+      box-shadow: 0 4px 15px rgba(156, 163, 175, 0.4) !important;
+      background: #9ca3af !important;
     }
 
     @media (max-width: 768px) {
@@ -222,6 +239,11 @@ $libro = $result->fetch_assoc();
       .botones {
         justify-content: center;
       }
+
+      .btn-volver-top {
+        padding: 12px 25px;
+        font-size: 1em;
+      }
     }
   </style>
 </head>
@@ -232,18 +254,23 @@ $libro = $result->fetch_assoc();
       <img src="../imagenes/LOGO_BOOK_RUSH.png" alt="Logo Book Rush" style="height: 50px; margin-right: 10px;">
       <h1>Book Rush</h1>
     </div>
+    
+    <!-- Botón Volver en la parte superior derecha -->
+    <a href="../index.php" class="btn-volver-top">
+      ← Volver
+    </a>
   </div>
 
   <div class="container">
     <h1 class="page-title"><?= htmlspecialchars($libro['titulo']) ?></h1>
-
+    
     <div class="detalle-container">
       <img src="../imagenes/<?= htmlspecialchars($libro['imagen']) ?>" alt="<?= htmlspecialchars($libro['titulo']) ?>">
-
+      
       <div class="detalle-texto">
         <h2><?= htmlspecialchars($libro['AUTOR']) ?></h2>
         <p><strong>Descripción:</strong><br><?= nl2br(htmlspecialchars($libro['descripcion'])) ?></p>
-
+        
         <?php if (!empty($libro['resumen'])): ?>
           <p><strong>Resumen:</strong><br><?= nl2br(htmlspecialchars($libro['resumen'])) ?></p>
         <?php endif; ?>
@@ -264,10 +291,6 @@ $libro = $result->fetch_assoc();
           <?php else: ?>
             <span class="btn-disabled">PDF no disponible</span>
           <?php endif; ?>
-
-          <a href="../index.php" class="btn-secondary">
-            Volver
-          </a>
         </div>
       </div>
     </div>
