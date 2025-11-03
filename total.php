@@ -31,7 +31,7 @@ if ($puntaje_total >= 80) {
 } elseif ($puntaje_total >= 60) {
     $mensaje = "Buen esfuerzo. Puedes mejorar aún más.";
 } else {
-    $mensaje = "Necesitas repasar un poco más.";
+    $mensaje = "Necesitas repasar un poco más. 🌱";
 }
 ?>
 <!DOCTYPE html>

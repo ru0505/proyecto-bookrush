@@ -49,7 +49,7 @@ $libro = $result->fetch_assoc();
     <h1 class="page-title"><?= htmlspecialchars($libro['titulo']) ?></h1>
     
     <div class="detalle-container">
-      <img src="../imagenes/<?= htmlspecialchars($libro['imagen']) ?>" alt="<?= htmlspecialchars($libro['titulo']) ?>">
+      <img src="../<?= htmlspecialchars($libro['imagen2']) ?>" alt="<?= htmlspecialchars($libro['titulo']) ?>">
       
       <div class="detalle-texto">
         <h2><?= htmlspecialchars($libro['AUTOR']) ?></h2>
