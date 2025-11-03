@@ -11,8 +11,8 @@ if ($id_capitulo <= 0 || $id_libro <= 0) {
     die("Error: Parámetros inválidos.");
 }
 
-// Consulta a la base de datos (UNA SOLA VEZ)
-$stmt = $conn->prepare("SELECT titulo, contenido, glosario FROM capitulos WHERE id_capitulo = ? AND id_libro = ?");
+// Consulta a la base de datos 
+$stmt = $conn->prepare("SELECT titulo, contenido, glosario, imagen FROM capitulos WHERE id_capitulo = ? AND id_libro = ?");
 $stmt->bind_param("ii", $id_capitulo, $id_libro);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -129,7 +129,7 @@ if (!empty($capitulo['glosario'])) {
   <a href="../mapa_capitulos/mapa_capitulos.php?id=<?= $id_libro ?>" class="volver-x">✖</a>
 
   <div class="contenido">
-    <img src="../imagenes/capitulo<?= $id_capitulo ?>.jpg" alt="Imagen capítulo <?= $id_capitulo ?>">
+    <img src="../<?= htmlspecialchars($capitulo['imagen']) ?>" alt="Imagen capítulo <?= $id_capitulo ?>">
     
     <div class="texto">
       <h2><?= htmlspecialchars($capitulo['titulo']) ?></h2>

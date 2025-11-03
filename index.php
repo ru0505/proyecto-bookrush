@@ -138,7 +138,7 @@ if (!empty($dni)) {
     ?>
       <div class="libro">
         <?php if (!empty($imagen)): ?>
-          <img src="imagenes/<?= $imagen ?>" alt="<?= $nombre ?>">
+          <img src="<?= $imagen ?>" alt="<?= $nombre ?>">
         <?php else: ?>
           <img src="imagenes/default.jpg" alt="Sin imagen">
         <?php endif; ?>

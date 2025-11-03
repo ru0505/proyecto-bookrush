@@ -148,8 +148,7 @@ $libro = $result->fetch_assoc();
   <h1><?= htmlspecialchars($libro['titulo']) ?></h1>
 
   <div class="detalle-container">
-    <img src="../imagenes/<?= htmlspecialchars($libro['imagen']) ?>" alt="<?= htmlspecialchars($libro['titulo']) ?>">
-
+    <img src="../<?= htmlspecialchars($libro['imagen2']) ?>" alt="<?= htmlspecialchars($libro['titulo']) ?>">
     <div class="detalle-texto">
       <h2>Autor: <?= htmlspecialchars($libro['AUTOR']) ?></h2>
       <p><strong>Descripción:</strong> <?= nl2br(htmlspecialchars($libro['descripcion'])) ?></p>
