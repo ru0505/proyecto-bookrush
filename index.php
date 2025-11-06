@@ -28,7 +28,7 @@ if ($result && $result->num_rows > 0) {
 $progreso = [];
 
 if (!empty($dni)) {
-    $sql2 = "SELECT id_libro, SUM(puntaje) as total FROM puntajes WHERE dni=? GROUP BY id_libro";
+    $sql2 = "SELECT id_libro, SUM(PUNTAJE) as total FROM puntajes WHERE DNI=? GROUP BY id_libro";
     $stmt2 = $conn->prepare($sql2);
     $stmt2->bind_param("s", $dni);
     $stmt2->execute();

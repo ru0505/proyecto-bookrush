@@ -40,9 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $puntaje = $pregunta['puntaje'] ?? 20;
 
         $stmt3 = $conn->prepare("
-            INSERT INTO puntajes (dni, id_libro, capitulo, id_pregunta, puntaje)
+            INSERT INTO puntajes (DNI, id_libro, CAPITULO, id_pregunta, PUNTAJE)
             VALUES (?, ?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE puntaje = VALUES(puntaje)
+            ON DUPLICATE KEY UPDATE PUNTAJE = VALUES(PUNTAJE)
         ");
         $stmt3->bind_param("siiii", $_SESSION['dni'], $id_libro, $id_capitulo, $pregunta['id_pregunta'], $puntaje);
         $stmt3->execute();

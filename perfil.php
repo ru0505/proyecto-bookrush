@@ -7,11 +7,28 @@ if (!isset($_SESSION['usuario'])) {
     exit();
 }
 
-$usuario = $_SESSION['usuario'];
-$nombre = $usuario['NOMBRE'] ?? 'Desconocido';
-$dni = $usuario['DNI'] ?? 'No disponible';
-$rol = $usuario['ROL'] ?? 'Invitado';
-$id_usuario = $usuario['ID_USUARIO'] ?? 0;
+// Corregir: $_SESSION['usuario'] es solo el nombre, no el array completo
+$nombre = $_SESSION['usuario'] ?? 'Desconocido';
+$dni = $_SESSION['dni'] ?? 'No disponible';
+
+// Obtener datos completos del usuario desde la BD si tenemos el DNI
+if ($dni && $dni !== 'No disponible' && !empty($dni)) {
+    $stmt = $conn->prepare("SELECT * FROM usuarios WHERE DNI = ?");
+    $stmt->bind_param("s", $dni);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($usuario_db = $result->fetch_assoc()) {
+        $nombre = $usuario_db['NOMBRE'] ?? $nombre;
+        $rol = $usuario_db['ROL'] ?? 'Invitado';
+        $id_usuario = $usuario_db['ID_USUARIO'] ?? 0;
+    } else {
+        $rol = 'Invitado';
+        $id_usuario = 0;
+    }
+} else {
+    $rol = 'Invitado';
+    $id_usuario = 0;
+}
 
 // Puntaje total
 $puntaje_total = 0;

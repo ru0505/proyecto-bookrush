@@ -13,44 +13,30 @@ include 'conexion.php';
 $dni = $_SESSION['dni'];
 $usuario = $_SESSION['usuario'] ?? '';
 
-$libros = [
-  1 => [
-    "nombre" => "Jorge o el hijo del pueblo",
-    "descripcion" => "Una obra pionera que denuncia las injusticias sociales en el Perú rural.",
-    "imagen" => "avesnido.png",
-    "archivo" => "Aves_sin_nido.html"
-  ],
-  2 => [
-    "nombre" => "Mitos y Leyendas de Arequipa",
-    "descripcion" => "Una crítica intensa a la violencia en un colegio militar de Lima.",
-    "imagen" => "perros.png",
-    "archivo" => "mitos_leyendas.html"
-  ],
-  3 => [
-    "nombre" => "Poesias Completas",
-    "descripcion" => "Un conmovedor cuento sobre la muerte y el honor de un gallo de pelea.",
-    "imagen" => "zorro_condor.png",
-    "archivo" => "mitos_leyendas.html"
-  ],
-  4 => [
-    "nombre" => "Crimen y Castigo",
-    "descripcion" => "Un conmovedor cuento sobre la muerte y el honor de un gallo de pelea.",
-    "imagen" => "zorro_condor.png",
-    "archivo" => "crimen_castigo.php"
-  ],
-  5 => [
-    "nombre" => "Mujercitas",
-    "descripcion" => "Un conmovedor cuento sobre la muerte y el honor de un gallo de pelea.",
-    "imagen" => "mujerdentro.jpg",
-    "archivo" => "mujercitas.php"
-  ],
-  6 => [
-    "nombre" => "Orgullo y Prejuicio",
-    "descripcion" => "Un conmovedor cuento sobre la muerte y el honor de un gallo de pelea.",
-    "imagen" => "orguportada.jpg",
-    "archivo" => "orgullo.php"
-  ]
-];
+// Traer libros de literatura universal desde la BD
+// AJUSTA estos IDs según tu base de datos
+$sql = "SELECT id_libro, titulo, AUTOR, descripcion, imagen, archivo FROM libros WHERE id_libro IN (4, 5, 6, 7, 9, 11, 12, 13, 15, 16)";
+$result = $conn->query($sql);
+
+$libros = [];
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $libros[] = $row;
+    }
+}
+
+// Traer progreso del usuario
+$progreso = [];
+if (!empty($dni)) {
+    $sql2 = "SELECT id_libro, SUM(PUNTAJE) as total FROM puntajes WHERE DNI=? GROUP BY id_libro";
+    $stmt2 = $conn->prepare($sql2);
+    $stmt2->bind_param("s", $dni);
+    $stmt2->execute();
+    $res2 = $stmt2->get_result();
+    while ($row = $res2->fetch_assoc()) {
+        $progreso[$row['id_libro']] = intval($row['total']);
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -133,13 +119,28 @@ $libros = [
 <main>
   <h2 style="text-align: center; margin-bottom: 20px;">Literatura Universal</h2>
   <div class="libros-grid">
-    <?php foreach ($libros as $libro): ?>
+    <?php foreach ($libros as $libro): 
+      $id_libro = $libro['id_libro'];
+      $puntaje_libro = $progreso[$id_libro] ?? 0;
+      
+      // Calcular porcentaje
+      $total_puntos_libro = 500;
+      $porcentaje = min(100, ($puntaje_libro / $total_puntos_libro) * 100);
+    ?>
       <div class="libro">
-        <img src="imagenes/<?= htmlspecialchars($libro['imagen']) ?>" alt="<?= htmlspecialchars($libro['nombre']) ?>">
-        <h3><?= htmlspecialchars($libro['nombre']) ?></h3>
+        <img src="<?= htmlspecialchars($libro['imagen']) ?>" alt="<?= htmlspecialchars($libro['titulo']) ?>">
+        <h3><?= htmlspecialchars($libro['titulo']) ?></h3>
         <p><?= htmlspecialchars($libro['descripcion']) ?></p>
-        <a href="<?= htmlspecialchars($libro['archivo']) ?>">
-          <button>Leer cuento completo</button>
+        
+        <?php if ($porcentaje > 0): ?>
+          <div class="progreso-container">
+            <div class="progreso-barra" style="width: <?= round($porcentaje) ?>%; background: linear-gradient(90deg, #4a90e2, #357abd);"></div>
+          </div>
+          <p class="progreso-texto"><?= round($porcentaje) ?>% completado</p>
+        <?php endif; ?>
+        
+        <a href="detalle_libros/detalle_libro.php?id_libro=<?= $id_libro ?>">
+          <button>📖 Leer cuento completo</button>
         </a>
       </div>
     <?php endforeach; ?>

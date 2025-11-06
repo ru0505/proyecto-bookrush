@@ -13,9 +13,9 @@ $capitulo = isset($_GET['id_capitulo']) ? intval($_GET['id_capitulo']) : 1;
 
 // Obtener puntaje total del usuario para este libro y capítulo
 $stmt = $conn->prepare("
-    SELECT SUM(puntaje) as total 
+    SELECT SUM(PUNTAJE) as total 
     FROM puntajes 
-    WHERE dni = ? AND id_libro = ? AND capitulo = ?
+    WHERE DNI = ? AND id_libro = ? AND CAPITULO = ?
 ");
 $stmt->bind_param("sii", $dni, $id_libro, $capitulo);
 $stmt->execute();

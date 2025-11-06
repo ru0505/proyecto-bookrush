@@ -21,9 +21,24 @@ $stmtCap->bind_param("i", $id_libro);
 $stmtCap->execute();
 $capitulos = $stmtCap->get_result()->fetch_all(MYSQLI_ASSOC);
 
-// Simulación de progreso (por ahora)
-$completed = $_SESSION['completed'] ?? [];
-$startIndex = (!empty($completed) ? max($completed) : 1) - 1;
+// Obtener puntajes del usuario por capítulo para este libro
+$puntajes_por_capitulo = [];
+if (isset($_SESSION['dni']) && !empty($_SESSION['dni'])) {
+    $dni = $_SESSION['dni'];
+    $stmtPuntajes = $conn->prepare("
+        SELECT CAPITULO, SUM(PUNTAJE) as total 
+        FROM puntajes 
+        WHERE DNI = ? AND id_libro = ? 
+        GROUP BY CAPITULO
+    ");
+    $stmtPuntajes->bind_param("si", $dni, $id_libro);
+    $stmtPuntajes->execute();
+    $resultPuntajes = $stmtPuntajes->get_result();
+    
+    while ($row = $resultPuntajes->fetch_assoc()) {
+        $puntajes_por_capitulo[$row['CAPITULO']] = intval($row['total']);
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -58,19 +73,39 @@ $startIndex = (!empty($completed) ? max($completed) : 1) - 1;
         <?php else: ?>
             <div class="capitulos-grid">
                 <?php foreach ($capitulos as $index => $cap):
-                    $estado = "blocked";
-                    if (in_array($cap['id_capitulo'], $completed)) {
+                    $id_cap = $cap['id_capitulo'];
+                    $puntaje_cap = $puntajes_por_capitulo[$id_cap] ?? 0;
+                    
+                    // Determinar estado del capítulo
+                    $estado = "blocked"; // Bloqueado por defecto
+                    
+                    if ($puntaje_cap >= 80) {
+                        // Si tiene 80+ puntos, está completado
                         $estado = "completed";
-                    } elseif ($index == $startIndex) {
+                    } elseif ($index == 0) {
+                        // El primer capítulo siempre está disponible
                         $estado = "playable";
+                    } else {
+                        // Verificar si el capítulo anterior tiene 80+ puntos
+                        $cap_anterior = $capitulos[$index - 1]['id_capitulo'];
+                        $puntaje_anterior = $puntajes_por_capitulo[$cap_anterior] ?? 0;
+                        
+                        if ($puntaje_anterior >= 80) {
+                            $estado = "playable";
+                        }
                     }
+                    
                     // Mostrar solo el título limpio dentro del box: quitar prefijos como "Capítulo 1"
                     $displayTitle = preg_replace('/^\s*capitu?lo\s*\d+\s*/iu', '', $cap['titulo']);
                 ?>
-                    <a href="../contenido_capitulo/contenido_capitulo.php?id_capitulo=<?= $cap['id_capitulo'] ?>&id_libro=<?= $id_libro ?>" 
-                       class="capitulo-card <?= $estado ?>">
-                        <div class="capitulo-numero"><?= $cap['id_capitulo'] ?></div>
+                    <a href="<?= $estado != 'blocked' ? '../contenido_capitulo/contenido_capitulo.php?id_capitulo='.$id_cap.'&id_libro='.$id_libro : '#' ?>" 
+                       class="capitulo-card <?= $estado ?>" 
+                       <?= $estado == 'blocked' ? 'onclick="return false;" style="cursor: not-allowed;"' : '' ?>>
+                        <div class="capitulo-numero"><?= $id_cap ?></div>
                         <div class="capitulo-titulo"><?= htmlspecialchars($displayTitle) ?></div>
+                        <?php if ($puntaje_cap > 0): ?>
+                            <div class="capitulo-puntaje"><?= $puntaje_cap ?>/100 pts</div>
+                        <?php endif; ?>
                     </a>
                 <?php endforeach; ?>
             </div>

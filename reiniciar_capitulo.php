@@ -19,7 +19,7 @@ $id_libro = intval($_GET['id_libro']);
 $id_capitulo = intval($_GET['id_capitulo']);
 
 // Borrar todos los registros de ese usuario, libro y capítulo
-$stmt = $conn->prepare("DELETE FROM puntajes WHERE dni = ? AND id_libro = ? AND capitulo = ?");
+$stmt = $conn->prepare("DELETE FROM puntajes WHERE DNI = ? AND id_libro = ? AND CAPITULO = ?");
 $stmt->bind_param("sii", $dni, $id_libro, $id_capitulo);
 $stmt->execute();
 
