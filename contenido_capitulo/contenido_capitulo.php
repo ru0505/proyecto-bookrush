@@ -134,7 +134,7 @@ if (!empty($capitulo['glosario'])) {
     <div class="texto">
       <h2><?= htmlspecialchars($capitulo['titulo']) ?></h2>
       <p><?= nl2br(htmlspecialchars($capitulo['contenido'] ?? 'Contenido pendiente...')) ?></p>
-    </div>
+    </div>  
   </div>
 
   <div class="acordeon">
