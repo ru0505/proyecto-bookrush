@@ -13,9 +13,8 @@ include 'conexion.php';
 $dni = $_SESSION['dni'];
 $usuario = $_SESSION['usuario'] ?? '';
 
-// Traer libros de literatura universal desde la BD
-// AJUSTA estos IDs según tu base de datos
-$sql = "SELECT id_libro, titulo, AUTOR, descripcion, imagen, archivo FROM libros WHERE id_libro IN (4, 5, 6, 7, 9, 11, 12, 13, 15, 16)";
+// Traer libros de literatura universal desde la BD (filtrado por categoria)
+$sql = "SELECT id_libro, titulo, AUTOR, descripcion, imagen, archivo FROM libros WHERE categoria = 'Universal' ORDER BY id_libro";
 $result = $conn->query($sql);
 
 $libros = [];

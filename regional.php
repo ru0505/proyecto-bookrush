@@ -13,9 +13,8 @@ include 'conexion.php';
 $dni = $_SESSION['dni'];
 $usuario = $_SESSION['usuario'] ?? '';
 
-// Traer libros de literatura regional desde la BD
-// AJUSTA estos IDs según tu base de datos
-$sql = "SELECT id_libro, titulo, AUTOR, descripcion, imagen, archivo FROM libros WHERE id_libro IN (14, 17)";
+// Traer libros de literatura regional desde la BD (filtrado por categoria)
+$sql = "SELECT id_libro, titulo, AUTOR, descripcion, imagen, archivo FROM libros WHERE categoria = 'Regional' ORDER BY id_libro";
 $result = $conn->query($sql);
 
 $libros = [];
