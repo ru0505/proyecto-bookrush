@@ -1,0 +1,30 @@
+stages:
+  - Preparación
+  - Ejecución
+  - Remoto
+
+Instalar_dependencias:
+  stage: Preparación
+  allow_failure: false
+  script:
+    - echo "Preparando ... "
+
+Ejecutar_programa:
+  stage: Ejecución
+  allow_failure: false
+  script:
+    - echo "Ejecutando ... "
+
+Ejecutar_remoto:
+  stage: Remoto
+  allow_failure: false
+  script:
+    - echo "Inicio de actualizacion desarrollo bookrush"
+    - sh /www/wwwroot/repositorios/actualizar_bookrush.sh
+    - echo "Ejecucion en remoto Finalizada book rush..."
+    - ls -la
+  artifacts:
+    paths:
+      - /root
+  tags:
+    - svritesur
