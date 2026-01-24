@@ -2,532 +2,230 @@
 session_start();
 include 'conexion.php';
 
-// Verificación de sesión
-$usuario = $_SESSION['usuario']['NOMBRE'] ?? null;
-$id_usuario = $_SESSION['usuario']['ID_USUARIO'] ?? null;
-$dni = $_SESSION['usuario']['DNI'] ?? null;
+// ========== MEJORA: Configuración de zona horaria para racha ==========
+date_default_timezone_set('America/Lima');
 
+// Inicialización segura de variables
+$id_usuario = $_SESSION['id_usuario'] ?? null;
+$usuario = $_SESSION['usuario'] ?? '';
+$email = $_SESSION['email'] ?? '';
+$racha = $_SESSION['racha'] ?? 0;
 
-// Inicializar variables
-$puntaje = 0;
-$total_respondidas = 0;
+// Variables de racha mejoradas
+$racha = 0;
+$fuego_activo = false;
 
-// 1. Obtener puntaje y respuestas desde progreso_usuario
+// ========== MEJORA: Sistema de racha mejorado con validación de fechas ==========
 if ($id_usuario) {
-    $stmt = $conn->prepare("SELECT SUM(puntaje_obtenido) AS total_puntos, COUNT(*) AS respondidas FROM progreso_usuario WHERE id_usuario = ?");
-    $stmt->bind_param("i", $id_usuario);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    $data = $res->fetch_assoc();
-    $puntaje = $data['total_puntos'] ?? 0;
-    $total_respondidas = $data['respondidas'] ?? 0;
+    // Consultar estado de la racha en BD
+    $stmt_racha = $conn->prepare("SELECT racha, ultimo_acceso FROM usuarios WHERE ID = ?");
+    $stmt_racha->bind_param("i", $id_usuario);
+    $stmt_racha->execute();
+    $res_racha = $stmt_racha->get_result()->fetch_assoc();
+    $stmt_racha->close();
+
+    if ($res_racha) {
+        $racha = $res_racha['racha'];
+        $fecha_completa_bd = $res_racha['ultimo_acceso'];
+
+        if ($fecha_completa_bd) {
+            $fecha_bd = new DateTime($fecha_completa_bd);
+            $hoy = new DateTime();      
+            $ayer = new DateTime('-1 day'); 
+
+            $str_bd = $fecha_bd->format('Y-m-d');
+            $str_hoy = $hoy->format('Y-m-d');
+            $str_ayer = $ayer->format('Y-m-d');
+
+            // Activar fuego si el último acceso fue hoy o ayer
+            if ($str_bd === $str_hoy || $str_bd === $str_ayer) {
+                $fuego_activo = true;
+            } else {
+                $fuego_activo = false;
+            }
+        }
+        $_SESSION['racha'] = $racha;
+    }
+}
+// ========== FIN MEJORA ==========
+
+// 1. Traer libros desde la BD (Igual para todos)
+$sql = "SELECT id_libro, titulo, AUTOR, descripcion, imagen, archivo FROM libros";
+$result = $conn->query($sql);
+
+$libros = [];
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $libros[] = $row;
+    }
 }
 
-// 2. Puntaje por DNI (reemplaza si hay datos aquí)
-if ($dni) {
-    $stmt = $conn->prepare("SELECT SUM(PUNTAJE) AS total FROM puntajes WHERE DNI = ?");
-    $stmt->bind_param("s", $dni);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
-    if ($fila = $resultado->fetch_assoc()) {
-        $puntaje = $fila['total'] ?? 0;
-    }
+// 2. Traer progreso del usuario (Solo si hay ID)
+$progreso = [];
 
-    $stmt2 = $conn->prepare("SELECT COUNT(*) AS respondidas FROM puntajes WHERE DNI = ?");
-    $stmt2->bind_param("s", $dni);
+if ($id_usuario) {
+    // CORRECCIÓN AQUÍ: Usamos 'id_usuario' en el WHERE, no 'ID'
+    $sql2 = "SELECT id_libro, SUM(PUNTAJE) as total FROM puntajes WHERE id_usuario=? GROUP BY id_libro";
+    $stmt2 = $conn->prepare($sql2);
+    $stmt2->bind_param("i", $id_usuario); // 'i' porque es entero
     $stmt2->execute();
-    $resultado2 = $stmt2->get_result();
-    if ($fila2 = $resultado2->fetch_assoc()) {
-        $total_respondidas = $fila2['respondidas'];
+    $res2 = $stmt2->get_result();
+    while ($row = $res2->fetch_assoc()) {
+        $progreso[$row['id_libro']] = intval($row['total']);
+    }
+    $stmt2->close();
+}
+
+// 3. Obtener categorías dinámicamente para el menú
+$categorias_query = $conn->query("SELECT DISTINCT categoria FROM libros WHERE categoria IS NOT NULL ORDER BY categoria");
+$categorias = [];
+if ($categorias_query) {
+    while ($cat = $categorias_query->fetch_assoc()) {
+        $categorias[] = $cat['categoria'];
     }
 }
 
-$_SESSION['puntaje'] = $puntaje;
-$_SESSION['respondidas'] = $total_respondidas;
-
-// 3. Libros disponibles
-if (isset($_GET['version']) && $_GET['version'] === 'otra') {
-    $libros = [
-        5 => ["nombre" => "Caperucita Roja", "descripcion" => "Una niña, un bosque y un lobo curioso.", "imagen" => "caperucita.png", "archivo" => "cuentos/caperucita.html"],
-        6 => ["nombre" => "Los Tres Cerditos", "descripcion" => "Cerditos que construyen casas y enfrentan al lobo.", "imagen" => "cerditos.png", "archivo" => "cuentos/cerditos.html"],
-        7 => ["nombre" => "1984", "descripcion" => "Una historia de realidad pura.", "imagen" => "caperucita.png", "archivo" => "cuentos/caperucita.html"],
-        8 => ["nombre" => "Un mundo feliz", "descripcion" => "Nos muestra que nuestro mundo no es tan feliz como nosotros lo vemos.", "imagen" => "cerditos.png", "archivo" => "cuentos/cerditos.html"]
-      ];
-} else {
-    $libros = [
-        1 => ["nombre" => "Dracula", "descripcion" => "rácula es una novela de terror gótico escrita por el autor irlandés Bram Stoker.", "imagen" => "dracportada.jpg", "archivo" => "cuentos/dracula.php"],
-        2 => ["nombre" => "El Mago de OZ", "descripcion" => "El maravilloso mago de Oz narra la historia de Dorothy, una niña que vive en Kansas y es arrastrada por un
-tornado, junto a su perro Toto, hasta la mágica tierra de Oz.", "imagen" => "magodentro.jpg", "archivo" => "cuentos/magooz.php"],
-  
-        3 => ["nombre" => "Frankenstein", "descripcion" => "Frankenstein narra la historia de Victor, quien logra dar vida a un ser construido a partir de restos humanos. ", "imagen" => "frankportada.jpg", "archivo" => "cuentos/frankenstein.php"],
-        4 => ["nombre" => "Un mundo feliz", "descripcion" => "Nos muestra que nuestro mundo no es tan feliz como nosotros lo vemos.", "imagen" => "cerditos.png", "archivo" => "cuentos/cerditos.html"]
-      ];
-}
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Book Rush - Lecturas Infantiles</title>
+  <title>Book Rush - Biblioteca Interactiva</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <link href="https://fonts.cdnfonts.com/css/sergio-trendy" rel="stylesheet">
-
-  <style>
-    * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Sergio Trendy', sans-serif;
-    font-size:23px;
-    }
-
-    body {
-    background-color: #353346ff; 
-    color: #1e334e; 
-    }
-
+  <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
+  <link rel="stylesheet" href="responsive.css">
   
-    .top-bar {
-    width: 100%;
-    background-color: #5147aaff; 
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1100;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .top-bar h1 {
-    font-size: 35px;
-    color: #d85e39; 
-    font-family: 'Sergio Trendy', sans-serif;
-    }
-
-    .top-bar .links a {
-    margin-left: 20px;
-    text-decoration: none;
-    color: #1e334e; 
-    font-weight: bold;
-    }
-
-    .top-bar .links a:hover {
-    color: #0f6cba; 
-    }
-
-    header {
-    background-color:rgb(24, 43, 83); 
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    position: fixed;
-    top: 60px;
-    left: 0;
-    height: calc(100vh - 60px);
-    width: 200px;
-    box-shadow: 2px 0 10px rgb(22, 25, 26);
-    z-index: 1000;
-    }
-
-    nav {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 20px;
-    }
-
-    nav a {
-    text-decoration: none;
-    color:rgb(200, 211, 224);
-    font-weight: 500;
-    padding: 8px 4px;
-    border-left: 4px solid transparent;
-    }
-
-    nav a:hover {
-    border-left: 4px solid #d85e39; 
-    color: #d85e39;
-    }
-
-    main {
-    margin-left: 200px;
-    padding-top: 100px;
-    }
-
-    .hero {
-    background: linear-gradient(to right, #5147aaff, #69aae7ff);
-    height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fdfdfdff;
-    font-size: 70px;
-    font-weight: bold;
-    text-align: center;
-    }
-
-
-    .section {
-    padding: 40px 80px;
-    font-size:25px;
-    }
-
-    .section h2 {
-    color: #d85e39;
-    margin-bottom: 20px;
-    text-align: center;
-    font-family: 'Sergio Trendy', sans-serif;
-    }
-
-    .libros-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      margin-top: 20px;
-    }
-
-    .libro {
-      background-color: #fcf2c0;
-      padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(30, 51, 78, 0.1);
-      text-align: center;
-    }
-
-    .libro img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-
-    .libro h3 {
-      font-size: 1.2em;
-      margin: 10px 0 5px;
-      color: #1e334e;
-    }
-
-    .libro p {
-      font-size: 0.95em;
-      color: #333;
-    }
-
-    .libro button {
-      margin-top: 10px;
-      background-color: #f0c64b;
-      color: #1e334e;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .libro button:hover {
-      background-color: #ffd447;
-    }
-    .libro {
-      transition: transform 0.3s ease;
-    }
-
-    .libro:hover {
-      transform: scale(1.05);
-    }
-
-    .leer-mas {
-    text-align: center;
-    margin-top: 40px;
-    }
-
-    .leer-mas form button {
-    padding: 20px 20px;
-    background-color: #0f6cba;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 30px;
-    }
-
-    .leer-mas form button:hover {
-    background-color: #d85e39; 
-    }
-
-
-    footer {
-    background-color: rgba(41, 39, 37, 1);
-    color: #fff;
-    text-align: center;
-    padding: 20px 20px;
-    margin-top: 40px;
-    }
-
-    .usuario-logueado {
-      display: flex;
-      align-items: center;
-      font-weight: bold;
-      color: #9eb0c7ff;
-      gap: 25px;
-    }
-
-    .usuario-logueado a {
-      text-decoration: none;
-      color: #d85e39;
-      font-weight: bold;
-    }
-
-    .usuario-logueado a:hover {
-      color: #ccbd7dff;;
-    }
-        .icon-logout {
-      width: 70px;
-      height: 70px;
-      cursor: pointer;
-    }
-
-    .modal {
-      display: none; /* Oculto por defecto */
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro */
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-contenido {
-      background-color: #fff;
-      padding: 30px;
-      border-radius: 15px;
-      text-align: center;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-      width: 300px;
-      
-    }
-
-    .modal-contenido button {
-      margin: 10px;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      background-color: #f0c64b;
-      color: #1e334e;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .modal-contenido button:hover {
-      background-color: #d8b238;
-    }
-        
-    .top-icons {
-    display: flex;
-    gap: 30px;
-    align-items: center;
-    transform: translateX(-80px); 
-    }
-    .icon-container {
-      position: relative;
-    }
-
-    .icon {
-      width: 60px;
-      height: 60px;
-      cursor: pointer;
-    }
-
-    .tooltip {
-      display: none;
-      position: absolute;
-      top: 60px;
-      left: -40px;
-      background-color: #ccbd7dff;
-      color: #756e47ff;
-      padding: 20px;
-      border-radius: 10px;
-      width: 180px;
-      box-shadow: 0px 4px 8px rgba(0,0,0,0.3);
-      z-index: 10;
-      font-size: 14px;
-    }
-
-    .icon-container:hover .tooltip {
-      display: block;
+  <style>
+    /* CSS para hacer clickeable todo el contenedor del libro */
+    .libro-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        transition: transform 0.3s ease;
     }
     
-
-    .tooltip ul {
-      margin: 40px 10px 20px 15px;
-      padding: 10;
-    }
-    .boton-top {
-      background-color: #d17f3cff;
-      color: #fafafaff;
-      padding: 10px 15px;
-      border-radius: 8px;
-      font-weight: bold;
-      text-decoration: none;
-      transition: background-color 0.3s;
-      border: none;
+    .libro-link:hover .libro {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
 
-    .boton-top:hover {
-      background-color: #cac6ddff;
-      color: #fff;
+    .libro {
+        height: 100%;
+        cursor: pointer;
     }
-    /* Estilo para el fondo oscuro */
-    #confirmacion-modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0, 0, 0, 0.6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* Caja del modal centrado */
-    .modal-content {
-      background-color: white;
-      padding: 30px;
-      border-radius: 15px;
-      text-align: center;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-      max-width: 400px;
-      width: 80%;
-      font-size: 18px;
-    }
-
-    /* Botones del modal */
-    .modal-content button {
-      margin: 10px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 8px;
-      border: none;
-      transition: background-color 0.3s ease;
-    }
-
-    .modal-content button.confirmar {
-      background-color: #d85e39;
-      color: white;
-    }
-
-    .modal-content button.cancelar {
-      background-color: #ccc;
-    }
-
-    .modal-content button:hover {
-      opacity: 0.9;
-    }
-
   </style>
 </head>
-
-<script>
-  function mostrarConfirmacion() {
-    document.getElementById('confirmacion-modal').style.display = 'block';
-  }
-
-  function cerrarModal() {
-    document.getElementById('confirmacion-modal').style.display = 'none';
-  }
-
-  function cerrarSesion() {
-    window.location.href = 'logout.php';
-  }
-</script>
-
 <body>
 
 <div class="top-bar">
-  <div style="display: flex; align-items: center;">
-    <img src="imagenes/LOGO_BOOK_RUSH.png" alt="Logo Book Rush" style="height: 50px; margin-right: 10px;">
+  <button class="menu-toggle" onclick="toggleMenu()" aria-label="Menú">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+  
+  <a href="index.php" class="logo-link">
+    <img src="imagenes/lecturin/lecturin_saltando.png" alt="Logo Book Rush" style="height: 70px; margin-right: 10px;">
     <h1>Book Rush</h1>
-  </div>
+  </a>
 
   <div class="top-icons">
-    <?php if ($usuario): ?>
-      <!-- Perfil del usuario -->
+    <?php if ($id_usuario): ?>
       <a href="perfil.php" style="text-decoration: none;">
         <div class="icon-container" style="cursor: pointer;">
           <img src="imagenes/usuario.png" alt="Usuario" class="icon">
+
           <div class="tooltip">
             <strong>Usuario:</strong> <?= htmlspecialchars($usuario) ?><br>
-            <strong>DNI:</strong> <?= htmlspecialchars($dni) ?><br>
+            <strong>Email:</strong> <?= htmlspecialchars($email) ?><br>
           </div>
         </div>
       </a>
 
-      <!-- Puntaje -->
-      <div class="icon-container">
-        <img src="imagenes/estrella.png" alt="Puntaje" class="icon">
-        <div class="tooltip">
-          <strong>Total de puntos:</strong> <?= $puntaje ?><br>
-          <strong>Preguntas respondidas:</strong> <?= $total_respondidas ?><br><br>
-          <strong>Capítulos:</strong>
-          <ul>
-            <?php
-              $stmt = $conn->prepare("SELECT CAPITULO, SUM(PUNTAJE) as total FROM puntajes WHERE DNI = ? GROUP BY CAPITULO");
-              $stmt->bind_param("s", $dni);
-              $stmt->execute();
-              $res = $stmt->get_result();
-              while ($fila = $res->fetch_assoc()) {
-                echo "<li>" . htmlspecialchars($fila['CAPITULO']) . ": " . $fila['total'] . " pts</li>";
-              }
-            ?>
-          </ul>
-        </div>
+    <div class="icon-container racha-container">
+      <div class="racha-display <?= $fuego_activo ? '' : 'fuego-apagado' ?>">
+        <span class="fuego-emoji">🔥</span>
+        <span class="racha-numero"><?= $racha ?></span>
       </div>
-
-      <!-- Cerrar sesión con confirmación -->
-    <div class="icon-container" style="cursor: pointer;">
-      <img src="imagenes/puerta.png" alt="Cerrar sesión" class="icon" onclick="mostrarConfirmacion()">
-    </div>
-
-    <!-- Modal de confirmación -->
-    <div id="confirmacion-modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
-      <div style="background: white; padding: 20px; border-radius: 10px; width: 300px; max-width: 80%; margin: 100px auto; text-align: center;">
-        <p>¿Estás seguro de que deseas cerrar sesión?</p>
-        <button onclick="cerrarSesion()" style="margin: 5px; padding: 8px 16px; background-color: #d85e39; color: white; border: none; border-radius: 5px;">Sí</button>
-        <button onclick="cerrarModal()" style="margin: 5px; padding: 8px 16px; background-color: #1e334e; color: white; border: none; border-radius: 5px;">Cancelar</button>
+ 
+      <div class="tooltip tooltip-racha">
+        <strong>🔥 Racha de Días</strong><br>
+        <p style="margin: 10px 0; font-size: 16px;">
+          <?php if ($fuego_activo): ?>
+            <?php if ($racha >= 7): ?>
+              ¡Increíble! Llevas <strong><?= $racha ?> días</strong> consecutivos leyendo 🎉
+            <?php elseif ($racha >= 3): ?>
+              ¡Muy bien! Llevas <strong><?= $racha ?> días</strong> seguidos 💪
+            <?php elseif ($racha >= 1): ?>
+              Llevas <strong><?= $racha ?> día(s)</strong>. ¡Sigue así! 🌟
+            <?php endif; ?>
+          <?php else: ?>
+            <?php if ($racha > 0): ?>
+              Tu última racha fue de <strong><?= $racha ?> día(s)</strong>.<br>
+              ¡Completa una trivia hoy para reactivarla! 🚀
+            <?php else: ?>
+              ¡Empieza tu racha hoy! 🚀
+            <?php endif; ?>
+          <?php endif; ?>
+        </p>
+        <small style="color: rgba(255,255,255,0.8);">Ingresa cada día para mantener tu racha activa</small>
       </div>
     </div>
 
-      
-      
-
+      <div class="icon-container" style="cursor: pointer;">
+        <img src="imagenes/puerta.png" alt="Cerrar sesión" class="icon" onclick="mostrarConfirmacion()">
+        
+      </div>
     <?php else: ?>
       <a href="login.php" class="boton-top">Iniciar Sesión</a>
       <a href="registro.php" class="boton-top">Registrarse</a>
-
     <?php endif; ?>
   </div>
 </div>
 
+<!-- Modal de confirmación -->
+<div id="confirmacion-modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+  <div style="background: white; padding: 20px; border-radius: 10px; width: 300px; max-width: 80%; margin: 100px auto; text-align: center;">
+    <p>¿Estás seguro de que deseas cerrar sesión?</p>
+    <button onclick="cerrarSesion()" style="margin: 5px; padding: 8px 16px; background-color: #d85e39; color: white; border: none; border-radius: 5px;">Sí</button>
+    <button onclick="cerrarModal()" style="margin: 5px; padding: 8px 16px; background-color: #1e334e; color: white; border: none; border-radius: 5px;">Cancelar</button>
+  </div>
+</div>
 
 <header>
+  <?php if ($id_usuario): ?>
+  <div class="mobile-user-info">
+    <h3>👤 Mi Cuenta</h3>
+    <div class="mobile-user-item">
+      <strong>Usuario:</strong>
+      <span><?= htmlspecialchars($usuario) ?></span>
+    </div>
+    <div class="mobile-user-item">
+      <strong>Email:</strong>
+      <span><?= htmlspecialchars($email) ?></span>
+    </div>
+    <div class="mobile-user-item">
+      <strong>🔥 Racha:</strong>
+      <span><?= $racha ?> días</span>
+    </div>
+    <button class="mobile-logout-btn" onclick="mostrarConfirmacion()">Cerrar Sesión</button>
+  </div>
+  <?php endif; ?>
+  
   <nav>
-    <a href="nacional.php">Literatura Nacional</a>
-    <a href="regional.php">Literatura Regional</a>
-    <a href="universal.php">Literatura Universal</a>
-    
+    <?php foreach ($categorias as $cat): ?>
+      <a href="categoria.php?cat=<?= urlencode($cat) ?>">
+        <?= htmlspecialchars($cat) ?>
+      </a>
+    <?php endforeach; ?>
+    <!-- ========== MEJORA: Enlace a Recompensas ========== -->
+    <a href="recompensa.php" style="border-top: 2px solid rgba(255,255,255,0.2); padding-top: 15px; margin-top: 10px; background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,165,0,0.2));">
+      🎁 Mis Recompensas
+    </a>
+    <!-- ========== FIN MEJORA ========== -->
   </nav>
 </header>
 
@@ -535,45 +233,61 @@ tornado, junto a su perro Toto, hasta la mágica tierra de Oz.", "imagen" => "ma
   <section class="hero">
     ¡Descubre el mágico mundo de la lectura!
   </section>
-  <!--libros-->
-  <section class="section">
-    <h2>Libros para ti</h2>
-    <div class="libros-grid">
-  <?php foreach ($libros as $id => $libro): ?>
-    <div class="libro">
-      <img src="imagenes/<?= htmlspecialchars($libro['imagen']) ?>" alt="<?= htmlspecialchars($libro['nombre']) ?>">
-      <h3><?= htmlspecialchars($libro['nombre']) ?></h3>
-      <p><?= htmlspecialchars($libro['descripcion']) ?></p>
-      <?php if (isset($libro['archivo']) && file_exists($libro['archivo'])): ?>
-        <a href="<?= htmlspecialchars($libro['archivo']) ?>">
-          <button>Leer cuento completo</button>
-        </a>
-      <?php endif; ?>
-    </div>
-  <?php endforeach; ?>
+
+  <div class="libros-grid">
+  <?php if (!empty($libros)): ?>
+    <?php foreach ($libros as $libro): 
+      $id = $libro['id_libro'];
+      $nombre = htmlspecialchars($libro['titulo']);
+      $autor = htmlspecialchars($libro['AUTOR']);
+      $descripcion = htmlspecialchars($libro['descripcion']);
+      $imagen = htmlspecialchars($libro['imagen']);
+      $archivo = htmlspecialchars($libro['archivo']); 
+
+      $puntaje = $progreso[$id] ?? 0;
+      $porcentaje = min(100, round($puntaje)); 
+    ?>
+      <!-- Contenedor clickeable completo -->
+      <a href="detalle_libros/detalle_libro.php?id=<?= $id ?>" class="libro-link">
+        <div class="libro">
+          <?php if (!empty($imagen)): ?>
+            <img src="<?= $imagen ?>" alt="<?= $nombre ?>">
+          <?php else: ?>
+            <img src="imagenes/default.jpg" alt="Sin imagen">
+          <?php endif; ?>
+
+          <h3><?= $nombre ?></h3>
+          <p><strong><?= $autor ?></strong></p>
+          <p><?= $descripcion ?></p>
+        </div>
+      </a>
+    <?php endforeach; ?>
+  <?php else: ?>
+    <p>No hay libros disponibles.</p>
+  <?php endif; ?>
 </div>
-
-
-    <div class="leer-mas">
-      <?php if (isset($_GET['version']) && $_GET['version'] === 'otra'): ?>
-        <!-- Botón para volver atrás -->
-        <form method="get">
-          <button type="submit">Volver atrás</button>
-        </form>
-      <?php else: ?>
-        <!-- Botón para seguir leyendo -->
-        <form method="get">
-          <button type="submit" name="version" value="otra">Seguir leyendo</button>
-        </form>
-      <?php endif; ?>
-    </div>
-
-  </section>
-
-  <footer>
-    <p>&copy; 2025 Book Rush. Todos los derechos reservados.</p>
-  </footer>
 </main>
+
+<footer>
+  <p>&copy; 2025 Book Rush. Todos los derechos reservados.</p>
+</footer>
+
+<script>
+  function mostrarConfirmacion() {
+    // Usamos 'flex' para que funcione el centrado de tu CSS nuevo
+    document.getElementById('confirmacion-modal').style.display = 'flex';
+  }
+  
+  function cerrarModal() {
+    document.getElementById('confirmacion-modal').style.display = 'none';
+  }
+  
+  function cerrarSesion() {
+    window.location.href = 'logout.php';
+  }
+</script>
+
+<script src="menu-mobile.js"></script>
 
 </body>
 </html>
