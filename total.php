@@ -85,7 +85,7 @@ if ($puntaje_total >= 80) {
             
                         <div class="actions">
                                 <?php if ($puntaje_total >= 80): ?>
-                                        <a class="btn" href="pregunta/preguntas_frank.php?capitulo=<?= $capitulo + 1 ?>">
+                                        <a class="btn" href="contenido_capitulo/contenido_capitulo.php?id_capitulo=<?= $capitulo + 1 ?>&id_libro=<?= $id_libro ?>">
                                             Siguiente capítulo
                                         </a>
                                 <?php endif; ?>
