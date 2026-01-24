@@ -89,10 +89,10 @@ if (isset($_SESSION['id_usuario']) && !empty($_SESSION['id_usuario'])) {
 </head>
 <body>
     <div class="top-bar">
-        <div style="display: flex; align-items: center;">
+        <a href="../index.php" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
             <img src="../imagenes/lecturin//lecturin_saltando.png" alt="Logo Book Rush" style="height: 70px; margin-right: 5px;">
             <h1>Book Rush</h1>
-        </div>
+        </a>
         
         <a href="../detalle_libros/detalle_libro.php?id=<?= $id_libro ?>" class="btn-volver-top">
             ← Volver

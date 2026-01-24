@@ -143,6 +143,20 @@ body {
   line-height: 1.6;
 }
 
+/* Personajes en lista vertical */
+.detalle-texto p strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #1e3a8a;
+  font-size: 1.05em;
+}
+
+.detalle-texto p br {
+  display: block;
+  content: "";
+  margin-top: 8px;
+}
+
 .botones { 
   display: flex; 
   gap: 15px; 

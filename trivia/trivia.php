@@ -264,11 +264,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </script>
 <?php endif; ?>
 
+  <!-- Modal de Felicitaciones -->
+  <div id="modal-felicitaciones" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 9999;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 50px; border-radius: 16px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-width: 500px;">
+      <div style="font-size: 80px; margin-bottom: 20px;">🎉</div>
+      <h2 style="color: white; font-size: 32px; margin-bottom: 15px; font-weight: 700;">Felicitaciones</h2>
+      <p id="mensaje-felicitaciones" style="color: white; font-size: 18px; line-height: 1.6; margin-bottom: 30px;"></p>
+      <button onclick="cerrarModalFelicitaciones()" style="background: white; color: #667eea; padding: 15px 40px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: transform 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.2);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Continuar</button>
+    </div>
+  </div>
+
   <div class="top-bar">
-    <div style="display: flex; align-items: center; gap: 12px;">
+    <a href="../index.php" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit;">
       <img src="../imagenes/LOGO_BOOK_RUSH.png" alt="Logo" style="height: 48px;">
       <h1>Book Rush</h1>
-    </div>
+    </a>
   </div>
 
   <div class="container">
@@ -356,8 +366,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               if (data.siguiente > 0) {
                   window.location.href = "?id_libro=<?= $id_libro ?>&id_capitulo=<?= $id_capitulo ?>&pregunta=" + data.siguiente;
               } else {
-                  if (data.aprobo && data.mensaje_exito) alert(data.mensaje_exito);
-                  window.location.href = "../total.php?id_libro=<?= $id_libro ?>&id_capitulo=<?= $id_capitulo ?>";
+                  if (data.aprobo && data.mensaje_exito) {
+                      mostrarModalFelicitaciones(data.mensaje_exito);
+                  } else {
+                      window.location.href = "../total.php?id_libro=<?= $id_libro ?>&id_capitulo=<?= $id_capitulo ?>";
+                  }
               }
           }, 1500);
       })
@@ -366,6 +379,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           resultado.textContent = "Error de conexión";
           resultado.style.display = "block";
       });
+  }
+
+  function mostrarModalFelicitaciones(mensaje) {
+      document.getElementById('mensaje-felicitaciones').textContent = mensaje;
+      document.getElementById('modal-felicitaciones').style.display = 'flex';
+  }
+
+  function cerrarModalFelicitaciones() {
+      document.getElementById('modal-felicitaciones').style.display = 'none';
+      window.location.href = "../total.php?id_libro=<?= $id_libro ?>&id_capitulo=<?= $id_capitulo ?>";
   }
   </script>
 </body>

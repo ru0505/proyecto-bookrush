@@ -29,14 +29,14 @@ $libro = $result->fetch_assoc();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= htmlspecialchars($libro['titulo']) ?> - Book Rush</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/detalle_libro.css">
+  <link rel="stylesheet" href="../css/detalle_libro.css?v=<?= time() ?>">
 </head>
 <body>
   <div class="top-bar">
-    <div style="display: flex; align-items: center;">
+    <a href="../index.php" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
       <img src="../imagenes/lecturin/lecturin_saltando.png" alt="Logo Book Rush" style="height: 70px; margin-right: 10px;">
       <h1>Book Rush</h1>
-    </div>
+    </a>
     
     <a href="../index.php" class="btn-volver-top">
       ← Volver
@@ -58,20 +58,22 @@ $libro = $result->fetch_assoc();
         <?php endif; ?>
 
         <?php if (!empty($libro['personajes'])): ?>
-          <p><strong>Personajes:</strong><br>
+          <p><strong>Personajes:</strong></p>
+          <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
           <?php 
-             // 👇 LÓGICA DE NEGRITA APLICADA AQUÍ 👇
-             // 1. Obtenemos el texto limpio
-             $pers = htmlspecialchars($libro['personajes']);
-             
-             // 2. Reemplazamos lo que esté entre *asteriscos* por etiquetas <strong>
-             // Ejemplo: "*Romeo*" se convierte en "<strong>Romeo</strong>"
-             $pers_bold = preg_replace('/\*(.*?)\*/', '<strong>$1</strong>', $pers);
-             
-             // 3. Imprimimos respetando los saltos de línea
-             echo nl2br($pers_bold); 
+             // Separar personajes por coma y crear una lista vertical
+             $personajes_array = explode(',', $libro['personajes']);
+             foreach ($personajes_array as $personaje) {
+                 $personaje = trim($personaje);
+                 if (!empty($personaje)) {
+                     echo '<li style="margin-bottom: 8px; padding-left: 20px; position: relative;">';
+                     echo '<span style="position: absolute; left: 0;">•</span>';
+                     echo htmlspecialchars($personaje);
+                     echo '</li>';
+                 }
+             }
           ?>
-          </p>
+          </ul>
         <?php endif; ?>
 
         <div class="botones">

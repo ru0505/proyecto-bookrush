@@ -119,10 +119,10 @@ if (!empty($capitulo['glosario'])) {
 <body>
 
   <div class="top-bar">
-    <div style="display: flex; align-items: center; gap: 12px;">
+    <a href="../index.php" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit;">
       <img src="../imagenes/lecturin/lecturin_saltando.png" alt="Logo Book Rush" style="height: 70px;">
       <h1>Book Rush</h1>
-    </div>
+    </a>
     
     <a href="../mapa_capitulos/mapa_capitulos.php?id_libro=<?= $id_libro ?>" class="btn-volver-top">
       ← Volver

@@ -37,10 +37,10 @@ $misiones = [
 
 <!-- ===== BARRA SUPERIOR ===== -->
 <div class="top-bar">
-  <div class="top-left">
+  <a href="index.php" class="top-left" style="text-decoration: none; color: inherit;">
     <img src="imagenes/LOGO_BOOK_RUSH.png" alt="Logo Book Rush">
     <h2>Book Rush</h2>
-  </div>
+  </a>
 
   <div class="top-icons">
     <div class="icon-container">

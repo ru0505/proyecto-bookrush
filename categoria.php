@@ -79,7 +79,7 @@ if ($categorias_query) {
   </button>
   
   <a href="index.php" class="logo-link">
-    <img src="imagenes/LOGO_BOOK_RUSH.png" alt="Logo Book Rush" style="height: 50px; margin-right: 10px;">
+    <img src="imagenes/lecturin/lecturin_saltando.png" alt="Logo Book Rush" style="height: 70px; margin-right: 10px;">
     <h1>Book Rush</h1>
   </a>
 
@@ -97,49 +97,38 @@ if ($categorias_query) {
       </a>
 
       <div class="icon-container racha-container">
-        <div class="racha-display">
+        <div class="racha-display <?= $fuego_activo ? '' : 'fuego-apagado' ?>">
           <span class="fuego-emoji">🔥</span>
           <span class="racha-numero"><?= $racha ?></span>
         </div>
-        <span class="icon-label">Racha</span>
+ 
         <div class="tooltip tooltip-racha">
           <strong>🔥 Racha de Días</strong><br>
           <p style="margin: 10px 0; font-size: 16px;">
-            <?php if ($racha >= 7): ?>
-              ¡Increíble! Llevas <strong><?= $racha ?> días</strong> consecutivos leyendo 🎉
-            <?php elseif ($racha >= 3): ?>
-              ¡Muy bien! Llevas <strong><?= $racha ?> días</strong> seguidos 💪
-            <?php elseif ($racha >= 1): ?>
-              Llevas <strong><?= $racha ?> día(s)</strong>. ¡Sigue así! 🌟
+            <?php if ($fuego_activo): ?>
+              <?php if ($racha >= 7): ?>
+                ¡Increíble! Llevas <strong><?= $racha ?> días</strong> consecutivos leyendo 🎉
+              <?php elseif ($racha >= 3): ?>
+                ¡Muy bien! Llevas <strong><?= $racha ?> días</strong> seguidos 💪
+              <?php elseif ($racha >= 1): ?>
+                Llevas <strong><?= $racha ?> día(s)</strong>. ¡Sigue así! 🌟
+              <?php endif; ?>
             <?php else: ?>
-              ¡Empieza tu racha hoy! 🚀
+              <?php if ($racha > 0): ?>
+                Tu última racha fue de <strong><?= $racha ?> día(s)</strong>.<br>
+                ¡Completa una trivia hoy para reactivarla! 🚀
+              <?php else: ?>
+                ¡Empieza tu racha hoy! 🚀
+              <?php endif; ?>
             <?php endif; ?>
           </p>
-        </div>
-      </div>
-
-      <div class="icon-container">
-        <img src="imagenes/estrella.png" alt="Puntaje" class="icon">
-        <span class="icon-label">Puntos</span>
-        <div class="tooltip">
-          <strong>Total de puntos:</strong><br>
-          <ul>
-            <?php
-              $stmt = $conn->prepare("SELECT CAPITULO, SUM(PUNTAJE) as total FROM puntajes WHERE id_usuario = ? GROUP BY CAPITULO");
-              $stmt->bind_param("i", $id_usuario);
-              $stmt->execute();
-              $res = $stmt->get_result();
-              while ($fila = $res->fetch_assoc()) {
-                echo "<li>Capítulo " . htmlspecialchars($fila['CAPITULO']) . ": " . $fila['total'] . " pts</li>";
-              }
-            ?>
-          </ul>
+          <small style="color: rgba(255,255,255,0.8);">Ingresa cada día para mantener tu racha activa</small>
         </div>
       </div>
 
       <div class="icon-container" style="cursor: pointer;">
         <img src="imagenes/puerta.png" alt="Cerrar sesión" class="icon" onclick="mostrarConfirmacion()">
-        <span class="icon-label">Salir</span>
+        
       </div>
     <?php else: ?>
       <a href="login.php" class="boton-top">Iniciar Sesión</a>
@@ -182,6 +171,11 @@ if ($categorias_query) {
         <?= htmlspecialchars($cat) ?>
       </a>
     <?php endforeach; ?>
+    <!-- ========== MEJORA: Enlace a Recompensas ========== -->
+    <a href="recompensa.php" style="border-top: 2px solid rgba(255,255,255,0.2); padding-top: 15px; margin-top: 10px; background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,165,0,0.2));">
+      🎁 Mis Recompensas
+    </a>
+    <!-- ========== FIN MEJORA ========== -->
   </nav>
 </header>
 
