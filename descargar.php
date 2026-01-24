@@ -12,11 +12,11 @@ if (!file_exists($ruta)) {
 }
 
 // Si el usuario inició sesión, registra la descarga
-if (isset($_SESSION['dni'])) {
+if (isset($_SESSION['id_usuario'])) {
     include 'conexion.php';
-    $dni = $_SESSION['dni'];
-    $stmt = $conn->prepare("INSERT INTO descargas (dni, archivo, fecha_descarga) VALUES (?, ?, NOW())");
-    $stmt->bind_param("ss", $dni, $archivo);
+    $id_usuario = $_SESSION['id_usuario'];
+    $stmt = $conn->prepare("INSERT INTO descargas (id_usuario, archivo, fecha_descarga) VALUES (?, ?, NOW())");
+    $stmt->bind_param("is", $id_usuario, $archivo);
     $stmt->execute();
     $stmt->close();
 }

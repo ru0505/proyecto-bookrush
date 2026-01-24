@@ -138,9 +138,8 @@ if ($categorias_query) {
         <div class="icon-container" style="cursor: pointer;">
           <img src="imagenes/usuario.png" alt="Usuario" class="icon">
 
-          <div class="tooltip">
-            <strong>Usuario:</strong> <?= htmlspecialchars($usuario) ?><br>
-            <strong>Email:</strong> <?= htmlspecialchars($email) ?><br>
+          <div class="tooltip" style="width: auto; white-space: nowrap; padding: 12px 20px; background: rgba(30, 51, 78, 0.95); font-weight: 700; font-size: 15px;">
+            Mi Perfil
           </div>
         </div>
       </a>
@@ -151,33 +150,17 @@ if ($categorias_query) {
         <span class="racha-numero"><?= $racha ?></span>
       </div>
  
-      <div class="tooltip tooltip-racha">
-        <strong>🔥 Racha de Días</strong><br>
-        <p style="margin: 10px 0; font-size: 16px;">
-          <?php if ($fuego_activo): ?>
-            <?php if ($racha >= 7): ?>
-              ¡Increíble! Llevas <strong><?= $racha ?> días</strong> consecutivos leyendo 🎉
-            <?php elseif ($racha >= 3): ?>
-              ¡Muy bien! Llevas <strong><?= $racha ?> días</strong> seguidos 💪
-            <?php elseif ($racha >= 1): ?>
-              Llevas <strong><?= $racha ?> día(s)</strong>. ¡Sigue así! 🌟
-            <?php endif; ?>
-          <?php else: ?>
-            <?php if ($racha > 0): ?>
-              Tu última racha fue de <strong><?= $racha ?> día(s)</strong>.<br>
-              ¡Completa una trivia hoy para reactivarla! 🚀
-            <?php else: ?>
-              ¡Empieza tu racha hoy! 🚀
-            <?php endif; ?>
-          <?php endif; ?>
-        </p>
-        <small style="color: rgba(255,255,255,0.8);">Ingresa cada día para mantener tu racha activa</small>
+      <div class="tooltip" style="width: auto; white-space: nowrap; padding: 12px 20px; background: rgba(30, 51, 78, 0.95); font-weight: 700; font-size: 15px;">
+        Racha de días: <?= $racha ?>
       </div>
     </div>
 
       <div class="icon-container" style="cursor: pointer;">
         <img src="imagenes/puerta.png" alt="Cerrar sesión" class="icon" onclick="mostrarConfirmacion()">
         
+        <div class="tooltip" style="width: auto; white-space: nowrap; padding: 12px 20px; background: rgba(30, 51, 78, 0.95); font-weight: 700; font-size: 15px;">
+          Cerrar Sesión
+        </div>
       </div>
     <?php else: ?>
       <a href="login.php" class="boton-top">Iniciar Sesión</a>

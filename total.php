@@ -66,10 +66,10 @@ if ($puntaje_total >= 80) {
 </head>
 <body>
     <div class="top-bar">
-        <a href="index.php" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit;">
+        <div style="display: flex; align-items: center; gap: 12px;">
             <img src="imagenes/LOGO_BOOK_RUSH.png" alt="Logo" style="height: 50px;">
             <h1>Book Rush</h1>
-        </a>
+        </div>
         
         <!-- Botón Volver al Menú Principal en la parte superior derecha -->
         <a href="index.php" class="btn-volver-top">
@@ -85,7 +85,7 @@ if ($puntaje_total >= 80) {
             
                         <div class="actions">
                                 <?php if ($puntaje_total >= 80): ?>
-                                        <a class="btn" href="contenido_capitulo/contenido_capitulo.php?id_capitulo=<?= $capitulo + 1 ?>&id_libro=<?= $id_libro ?>">
+                                        <a class="btn" href="pregunta/preguntas_frank.php?capitulo=<?= $capitulo + 1 ?>">
                                             Siguiente capítulo
                                         </a>
                                 <?php endif; ?>

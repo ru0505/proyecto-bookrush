@@ -1,7 +1,7 @@
 <?php
 session_start();
 $usuario = $_SESSION['usuario'] ?? null;
-$dni = $_SESSION['dni'] ?? null;
+$email = $_SESSION['email'] ?? null;
 ?>
 
 <!DOCTYPE html>
@@ -35,7 +35,7 @@ $dni = $_SESSION['dni'] ?? null;
 
     <?php if ($usuario): ?>
       <section class="contenido">
-        <p>Hola, <strong><?= htmlspecialchars($usuario) ?></strong> (DNI: <?= htmlspecialchars($dni) ?>)</p>
+        <p>Hola, <strong><?= htmlspecialchars($usuario) ?></strong> (Email: <?= htmlspecialchars($email) ?>)</p>
         <a href="cliente.php" class="boton">Ir a mis libros</a>
       </section>
     <?php else: ?>

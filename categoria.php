@@ -10,10 +10,46 @@ if (!isset($_SESSION['usuario'])) {
 
 include 'conexion.php';
 
+// ========== MEJORA: Configuración de zona horaria para racha ==========
+date_default_timezone_set('America/Lima');
+
 $id_usuario = $_SESSION['id_usuario'];
 $usuario = $_SESSION['usuario'] ?? '';
 $email = $_SESSION['email'] ?? '';
 $racha = $_SESSION['racha'] ?? 0;
+
+// Variables de racha mejoradas
+$fuego_activo = false;
+
+// ========== Sistema de racha con validación de fechas ==========
+if ($id_usuario) {
+    $stmt_racha = $conn->prepare("SELECT racha, ultimo_acceso FROM usuarios WHERE ID = ?");
+    $stmt_racha->bind_param("i", $id_usuario);
+    $stmt_racha->execute();
+    $res_racha = $stmt_racha->get_result()->fetch_assoc();
+    $stmt_racha->close();
+
+    if ($res_racha) {
+        $racha = $res_racha['racha'];
+        $fecha_completa_bd = $res_racha['ultimo_acceso'];
+
+        if ($fecha_completa_bd) {
+            $fecha_bd = new DateTime($fecha_completa_bd);
+            $hoy = new DateTime();      
+            $ayer = new DateTime('-1 day'); 
+
+            $str_bd = $fecha_bd->format('Y-m-d');
+            $str_hoy = $hoy->format('Y-m-d');
+            $str_ayer = $ayer->format('Y-m-d');
+
+            if ($str_bd === $str_hoy || $str_bd === $str_ayer) {
+                $fuego_activo = true;
+            }
+        }
+        $_SESSION['racha'] = $racha;
+    }
+}
+// ========== FIN ==========
 
 // Obtener la categoría desde la URL
 $categoria = $_GET['cat'] ?? '';
@@ -68,6 +104,26 @@ if ($categorias_query) {
   <link href="https://fonts.cdnfonts.com/css/sergio-trendy" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
   <link rel="stylesheet" href="responsive.css">
+  
+  <style>
+    /* CSS para hacer clickeable todo el contenedor del libro */
+    .libro-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        transition: transform 0.3s ease;
+    }
+    
+    .libro-link:hover .libro {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .libro {
+        height: 100%;
+        cursor: pointer;
+    }
+  </style>
 </head>
 <body>
 
@@ -88,10 +144,9 @@ if ($categorias_query) {
       <a href="perfil.php" style="text-decoration: none;">
         <div class="icon-container" style="cursor: pointer;">
           <img src="imagenes/usuario.png" alt="Usuario" class="icon">
-          <span class="icon-label">Perfil</span>
-          <div class="tooltip">
-            <strong>Usuario:</strong> <?= htmlspecialchars($usuario) ?><br>
-            <strong>Email:</strong> <?= htmlspecialchars($email) ?><br>
+          
+          <div class="tooltip" style="width: auto; white-space: nowrap; padding: 12px 20px; background: rgba(30, 51, 78, 0.95); font-weight: 700; font-size: 15px;">
+            Mi Perfil
           </div>
         </div>
       </a>
@@ -102,33 +157,17 @@ if ($categorias_query) {
           <span class="racha-numero"><?= $racha ?></span>
         </div>
  
-        <div class="tooltip tooltip-racha">
-          <strong>🔥 Racha de Días</strong><br>
-          <p style="margin: 10px 0; font-size: 16px;">
-            <?php if ($fuego_activo): ?>
-              <?php if ($racha >= 7): ?>
-                ¡Increíble! Llevas <strong><?= $racha ?> días</strong> consecutivos leyendo 🎉
-              <?php elseif ($racha >= 3): ?>
-                ¡Muy bien! Llevas <strong><?= $racha ?> días</strong> seguidos 💪
-              <?php elseif ($racha >= 1): ?>
-                Llevas <strong><?= $racha ?> día(s)</strong>. ¡Sigue así! 🌟
-              <?php endif; ?>
-            <?php else: ?>
-              <?php if ($racha > 0): ?>
-                Tu última racha fue de <strong><?= $racha ?> día(s)</strong>.<br>
-                ¡Completa una trivia hoy para reactivarla! 🚀
-              <?php else: ?>
-                ¡Empieza tu racha hoy! 🚀
-              <?php endif; ?>
-            <?php endif; ?>
-          </p>
-          <small style="color: rgba(255,255,255,0.8);">Ingresa cada día para mantener tu racha activa</small>
+        <div class="tooltip" style="width: auto; white-space: nowrap; padding: 12px 20px; background: rgba(30, 51, 78, 0.95); font-weight: 700; font-size: 15px;">
+          Racha de días: <?= $racha ?>
         </div>
       </div>
 
       <div class="icon-container" style="cursor: pointer;">
         <img src="imagenes/puerta.png" alt="Cerrar sesión" class="icon" onclick="mostrarConfirmacion()">
         
+        <div class="tooltip" style="width: auto; white-space: nowrap; padding: 12px 20px; background: rgba(30, 51, 78, 0.95); font-weight: 700; font-size: 15px;">
+          Cerrar Sesión
+        </div>
       </div>
     <?php else: ?>
       <a href="login.php" class="boton-top">Iniciar Sesión</a>
@@ -190,23 +229,20 @@ if ($categorias_query) {
         $total_puntos_libro = 500;
         $porcentaje = min(100, ($puntaje_libro / $total_puntos_libro) * 100);
       ?>
-        <div class="libro">
-          <img src="<?= htmlspecialchars($libro['imagen']) ?>" alt="<?= htmlspecialchars($libro['titulo']) ?>">
-          <h3><?= htmlspecialchars($libro['titulo']) ?></h3>
-          <p><strong><?= htmlspecialchars($libro['AUTOR']) ?></strong></p>
-          <p><?= htmlspecialchars($libro['descripcion']) ?></p>
-          
-          <?php if ($porcentaje > 0): ?>
-            <div class="progreso">
-              <div class="barra" style="width: <?= round($porcentaje) ?>%;"></div>
-            </div>
-            <small><?= round($porcentaje) ?>% completado</small><br>
-          <?php endif; ?>
-          
-          <a href="detalle_libros/detalle_libro.php?id=<?= $id_libro ?>">
-            <button>📖 Leer cuento completo</button>
-          </a>
-        </div>
+        <!-- Contenedor clickeable completo -->
+        <a href="detalle_libros/detalle_libro.php?id=<?= $id_libro ?>" class="libro-link">
+          <div class="libro">
+            <?php if (!empty($libro['imagen'])): ?>
+              <img src="<?= htmlspecialchars($libro['imagen']) ?>" alt="<?= htmlspecialchars($libro['titulo']) ?>">
+            <?php else: ?>
+              <img src="imagenes/default.jpg" alt="Sin imagen">
+            <?php endif; ?>
+
+            <h3><?= htmlspecialchars($libro['titulo']) ?></h3>
+            <p><strong><?= htmlspecialchars($libro['AUTOR']) ?></strong></p>
+            <p><?= htmlspecialchars($libro['descripcion']) ?></p>
+          </div>
+        </a>
       <?php endforeach; ?>
     <?php else: ?>
       <p style="text-align: center; color: #fff; width: 100%;">No hay libros disponibles en esta categoría.</p>
