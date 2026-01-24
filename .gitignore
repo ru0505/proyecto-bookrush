@@ -1,0 +1,22 @@
+# Archivos PDF (demasiado grandes para GitHub)
+*.pdf
+libros/*.pdf
+
+# Archivos de sistema
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Archivos temporales
+*.bak
+*.tmp
+*~
+# Dependencias de Composer
+vendor/
+composer
+composer.lock
+
+# Logs
+logs/
+envio_correos/logs/
+*.log
