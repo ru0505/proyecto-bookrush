@@ -10,46 +10,10 @@ if (!isset($_SESSION['usuario'])) {
 
 include 'conexion.php';
 
-// ========== MEJORA: Configuración de zona horaria para racha ==========
-date_default_timezone_set('America/Lima');
-
 $id_usuario = $_SESSION['id_usuario'];
 $usuario = $_SESSION['usuario'] ?? '';
 $email = $_SESSION['email'] ?? '';
 $racha = $_SESSION['racha'] ?? 0;
-
-// Variables de racha mejoradas
-$fuego_activo = false;
-
-// ========== Sistema de racha con validación de fechas ==========
-if ($id_usuario) {
-    $stmt_racha = $conn->prepare("SELECT racha, ultimo_acceso FROM usuarios WHERE ID = ?");
-    $stmt_racha->bind_param("i", $id_usuario);
-    $stmt_racha->execute();
-    $res_racha = $stmt_racha->get_result()->fetch_assoc();
-    $stmt_racha->close();
-
-    if ($res_racha) {
-        $racha = $res_racha['racha'];
-        $fecha_completa_bd = $res_racha['ultimo_acceso'];
-
-        if ($fecha_completa_bd) {
-            $fecha_bd = new DateTime($fecha_completa_bd);
-            $hoy = new DateTime();      
-            $ayer = new DateTime('-1 day'); 
-
-            $str_bd = $fecha_bd->format('Y-m-d');
-            $str_hoy = $hoy->format('Y-m-d');
-            $str_ayer = $ayer->format('Y-m-d');
-
-            if ($str_bd === $str_hoy || $str_bd === $str_ayer) {
-                $fuego_activo = true;
-            }
-        }
-        $_SESSION['racha'] = $racha;
-    }
-}
-// ========== FIN ==========
 
 // Obtener la categoría desde la URL
 $categoria = $_GET['cat'] ?? '';

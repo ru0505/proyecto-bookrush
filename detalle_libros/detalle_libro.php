@@ -61,10 +61,28 @@ $libro = $result->fetch_assoc();
           <p><strong>Personajes:</strong></p>
           <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
           <?php 
-             // Separar personajes por coma y crear una lista vertical
-             $personajes_array = explode(',', $libro['personajes']);
+             // Limpiar y normalizar el texto de personajes
+             $personajes_texto = $libro['personajes'];
+             
+             // Primero intentar separar por saltos de línea
+             $personajes_array = preg_split('/\r\n|\r|\n/', $personajes_texto);
+             
+             // Si no hay saltos de línea, intentar separar por comas
+             if (count($personajes_array) == 1) {
+                 $personajes_array = explode(',', $personajes_texto);
+             }
+             
+             // Si no hay comas, intentar separar por guiones al inicio de línea
+             if (count($personajes_array) == 1) {
+                 $personajes_array = preg_split('/\s*-\s*/', $personajes_texto);
+             }
+             
              foreach ($personajes_array as $personaje) {
                  $personaje = trim($personaje);
+                 // Eliminar guiones o asteriscos al inicio
+                 $personaje = preg_replace('/^[\-\*•]\s*/', '', $personaje);
+                 $personaje = trim($personaje);
+                 
                  if (!empty($personaje)) {
                      echo '<li style="margin-bottom: 8px; padding-left: 20px; position: relative;">';
                      echo '<span style="position: absolute; left: 0;">•</span>';
