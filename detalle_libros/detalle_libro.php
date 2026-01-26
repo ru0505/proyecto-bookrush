@@ -51,10 +51,23 @@ $libro = $result->fetch_assoc();
       
       <div class="detalle-texto">
         <h2><?= htmlspecialchars($libro['AUTOR']) ?></h2>
-        <p><strong>Descripción:</strong><br><?= nl2br(htmlspecialchars($libro['descripcion'])) ?></p>
+        
+        <p><strong>Descripción:</strong><br>
+        <?php 
+            $descripcion = htmlspecialchars($libro['descripcion']);
+            $descripcion_formateada = preg_replace('/\*(.*?)\*/', '<strong style="color: #d35400;">$1</strong>', $descripcion);
+            echo nl2br($descripcion_formateada);
+        ?>
+        </p>
         
         <?php if (!empty($libro['resumen'])): ?>
-          <p><strong>Resumen:</strong><br><?= nl2br(htmlspecialchars($libro['resumen'])) ?></p>
+          <p><strong>Resumen:</strong><br>
+          <?php 
+              $resumen = htmlspecialchars($libro['resumen']);
+              $resumen_formateado = preg_replace('/\*(.*?)\*/', '<strong style="color: #d35400;">$1</strong>', $resumen);
+              echo nl2br($resumen_formateado);
+          ?>
+          </p>
         <?php endif; ?>
 
         <?php if (!empty($libro['personajes'])): ?>
@@ -84,9 +97,13 @@ $libro = $result->fetch_assoc();
                  $personaje = trim($personaje);
                  
                  if (!empty($personaje)) {
+                     // Aplicar formato de negrita con color naranja a texto entre asteriscos
+                     $personaje_escapado = htmlspecialchars($personaje);
+                     $personaje_formateado = preg_replace('/\*(.*?)\*/', '<strong style="color: #d35400;">$1</strong>', $personaje_escapado);
+                     
                      echo '<li style="margin-bottom: 8px; padding-left: 20px; position: relative;">';
                      echo '<span style="position: absolute; left: 0;">•</span>';
-                     echo htmlspecialchars($personaje);
+                     echo $personaje_formateado;
                      echo '</li>';
                  }
              }
