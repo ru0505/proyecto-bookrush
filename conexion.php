@@ -1,8 +1,8 @@
 <?php
 $host = "localhost";
 $user = "root";
-$pass = "root";
-$db = "bookrush"; // Nombre correcto de la base de datos
+$pass = "";
+$db = "bookrush"; 
 
 $conn = new mysqli($host, $user, $pass, $db);
 
