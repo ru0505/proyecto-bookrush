@@ -72,7 +72,25 @@ if (!empty($capitulo['glosario'])) {
     max-height: calc(100vh - 160px);
     overflow-y: auto;
     margin: auto;
+    position: relative; /* Necesario para posicionar la X */
     animation: modalSlideIn 0.4s ease-out;
+  }
+
+  /* Estilo para la X de cerrar */
+  .close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.3s;
+    line-height: 1;
+  }
+
+  .close-modal:hover {
+    color: #e74c3c;
   }
 
   @keyframes modalSlideIn {
@@ -104,6 +122,7 @@ if (!empty($capitulo['glosario'])) {
     border: none; padding: 12px 30px; border-radius: 8px; font-size: 1em;
     cursor: pointer; font-weight: 600; transition: all 0.3s ease;
   }
+  /* .modal-btn-secondary ya no se usa, pero se puede dejar por si acaso */
   .modal-btn-secondary { background-color: #e2e8f0; color: #4a5568; }
   .modal-btn-secondary:hover { background-color: #cbd5e0; }
   .modal-btn-primary { background-color: #ff8c42; color: white; }
@@ -204,6 +223,8 @@ if (!empty($capitulo['glosario'])) {
 
   <div id="modalInstrucciones" class="modal-overlay">
     <div class="modal-content">
+      <span class="close-modal" onclick="cerrarModal()">&times;</span>
+
       <div class="modal-emoji">🎯</div>
       <h2 class="modal-title">Antes de comenzar</h2>
       <p class="modal-subtitle">
@@ -229,9 +250,6 @@ if (!empty($capitulo['glosario'])) {
       </p>
 
       <div class="modal-buttons">
-        <button onclick="cerrarModal()" class="modal-btn modal-btn-secondary">
-          ← Volver atrás
-        </button>
         <button onclick="iniciarTrivia()" class="modal-btn modal-btn-primary">
           Comenzar trivia →
         </button>

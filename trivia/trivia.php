@@ -276,7 +276,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <div class="top-bar">
     <a href="../index.php" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit;">
-      <img src="../imagenes/LOGO_BOOK_RUSH.png" alt="Logo" style="height: 48px;">
+      <img src="../imagenes/lecturin/lecturin_saltando.png" alt="Logo" style="height: 48px;">
       <h1>Book Rush</h1>
     </a>
   </div>

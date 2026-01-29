@@ -121,7 +121,7 @@ $libro = $result->fetch_assoc();
               Descargar libro
             </a>
           <?php else: ?>
-            <span class="btn-disabled">Libro no disponible</span>
+            <span class="btn-disabled">Descarga disponible próximamente</span>
           <?php endif; ?>
           
         </div>
