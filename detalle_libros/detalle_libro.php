@@ -117,7 +117,7 @@ $libro = $result->fetch_assoc();
           </a>
 
           <?php if (!empty($libro['archivo'])): ?>
-            <a href="../libros/<?= htmlspecialchars($libro['archivo']) ?>" target="_blank">
+            <a href="../libros/<?= rawurlencode($libro['archivo']) ?>" download target="_blank">
               Descargar libro
             </a>
           <?php else: ?>
