@@ -117,27 +117,38 @@ $opciones = [
 $ultima_pregunta = count($lista_actual); 
 
 // 🔹 Procesar respuesta
+// 🔹 Procesar respuesta
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $respuesta = $_POST['respuesta'] ?? "";
         $correcta = ($respuesta === $pregunta['respuesta_correcta']);
         $puntaje = $correcta ? ($pregunta['puntaje'] ?? 20) : 0;
 
-        // 1. Insertar en puntajes (Sistema antiguo/compatible)
-        $stmt3 = $conn->prepare("INSERT INTO puntajes (id_usuario, id_libro, CAPITULO, id_pregunta, PUNTAJE) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE PUNTAJE = VALUES(PUNTAJE)");
-        $stmt3->bind_param("iiiii", $id_usuario, $id_libro, $id_capitulo, $pregunta['id_pregunta'], $puntaje);
-        $stmt3->execute();
+        // =========================================================
+        // 1. GUARDADO EN BASE DE DATOS (Solo si hay usuario)
+        // =========================================================
+        if ($id_usuario > 0) {
+            // Insertar en tabla antigua
+            $stmt3 = $conn->prepare("INSERT INTO puntajes (id_usuario, id_libro, CAPITULO, id_pregunta, PUNTAJE) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE PUNTAJE = VALUES(PUNTAJE)");
+            $stmt3->bind_param("iiiii", $id_usuario, $id_libro, $id_capitulo, $pregunta['id_pregunta'], $puntaje);
+            $stmt3->execute();
 
-        // 2. Insertar en progreso_usuario (Sistema de tu amigo)
-        $stmt_progreso = $conn->prepare("INSERT INTO progreso_usuario (id_usuario, id_pregunta, puntaje_obtenido, fecha_respuesta) VALUES (?, ?, ?, NOW()) ON DUPLICATE KEY UPDATE puntaje_obtenido = VALUES(puntaje_obtenido), fecha_respuesta = NOW()");
-        if ($stmt_progreso) {
-            $stmt_progreso->bind_param("iii", $id_usuario, $pregunta['id_pregunta'], $puntaje);
-            $stmt_progreso->execute();
+            // Insertar en tabla nueva (progreso)
+            $stmt_progreso = $conn->prepare("INSERT INTO progreso_usuario (id_usuario, id_pregunta, puntaje_obtenido, fecha_respuesta) VALUES (?, ?, ?, NOW()) ON DUPLICATE KEY UPDATE puntaje_obtenido = VALUES(puntaje_obtenido), fecha_respuesta = NOW()");
+            if ($stmt_progreso) {
+                $stmt_progreso->bind_param("iii", $id_usuario, $pregunta['id_pregunta'], $puntaje);
+                $stmt_progreso->execute();
+            }
         }
 
+        // =========================================================
+        // 2. LÓGICA DE JUEGO (Para TODOS, invitados y usuarios)
+        // =========================================================
         $_SESSION['respuestas'][$id_capitulo][$numero_pregunta] = ['correcta' => $correcta];
 
         $aprobo = false;
+        
+        // Verificamos si es la última pregunta para calcular si aprobó
         if ($numero_pregunta == $ultima_pregunta) {
             // Contar correctas de la sesión actual
             $correctas = 0;
@@ -147,10 +158,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             
+            // Regla: Aprobar con 4 o más
             $aprobo = ($correctas >= 4);
             
-            // Lógica de Racha
-            if ($correctas >= 3) {
+            // -----------------------------------------------------
+            // A. SISTEMA DE RACHA (Solo usuarios registrados)
+            // -----------------------------------------------------
+            if ($id_usuario > 0 && $correctas >= 3) {
                 $stmt_racha = $conn->prepare("SELECT racha, ultimo_acceso FROM usuarios WHERE ID = ?");
                 $stmt_racha->bind_param("i", $id_usuario);
                 $stmt_racha->execute();
@@ -172,49 +186,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             
-            // Mensajes de éxito (Tu amigo)
+            // Mensajes aleatorios (Se mantiene)
             $mensajes_exito = ["Felicidades!", "Lo lograste!", "Excelente trabajo!", "Increíble!", "Fantástico!"];
             $mensaje_aleatorio = $mensajes_exito[array_rand($mensajes_exito)];
             
             if ($aprobo) {
-                $stmt_limpiar = $conn->prepare("DELETE FROM intentos_fallidos WHERE id_usuario = ? AND id_libro = ? AND CAPITULO = ?");
-                $stmt_limpiar->bind_param("iii", $id_usuario, $id_libro, $id_capitulo);
-                $stmt_limpiar->execute();
+                // -------------------------------------------------
+                // B. LIMPIEZA Y RESEÑAS (Solo usuarios registrados)
+                // -------------------------------------------------
+                if ($id_usuario > 0) {
+                    // Borrar intentos fallidos previos
+                    $stmt_limpiar = $conn->prepare("DELETE FROM intentos_fallidos WHERE id_usuario = ? AND id_libro = ? AND CAPITULO = ?");
+                    $stmt_limpiar->bind_param("iii", $id_usuario, $id_libro, $id_capitulo);
+                    $stmt_limpiar->execute();
 
-                // ✅ RESTAURADO: Verificar si es el fin del libro para pedir reseña
-                $stmt_max = $conn->prepare("SELECT MAX(id_capitulo) as max_cap FROM preguntas WHERE id_libro = ?");
-                $stmt_max->bind_param("i", $id_libro);
-                $stmt_max->execute();
-                $max_cap = $stmt_max->get_result()->fetch_assoc()['max_cap'] ?? 0;
+                    // Verificar si es el fin del libro para pedir reseña
+                    $stmt_max = $conn->prepare("SELECT MAX(id_capitulo) as max_cap FROM preguntas WHERE id_libro = ?");
+                    $stmt_max->bind_param("i", $id_libro);
+                    $stmt_max->execute();
+                    $max_cap = $stmt_max->get_result()->fetch_assoc()['max_cap'] ?? 0;
 
-                if ($id_capitulo == $max_cap) {
-                    $stmt_rev = $conn->prepare("SELECT id_resena FROM resenas WHERE id_usuario = ? AND id_libro = ?");
-                    $stmt_rev->bind_param("ii", $id_usuario, $id_libro);
-                    $stmt_rev->execute();
-                    if ($stmt_rev->get_result()->num_rows == 0) {
-                        echo json_encode(["status" => "redirigir_resena", "mensaje" => "¡Libro completado! Déjanos tu opinión.", "id_libro" => $id_libro]);
-                        exit;
+                    if ($id_capitulo == $max_cap) {
+                        $stmt_rev = $conn->prepare("SELECT id_resena FROM resenas WHERE id_usuario = ? AND id_libro = ?");
+                        $stmt_rev->bind_param("ii", $id_usuario, $id_libro);
+                        $stmt_rev->execute();
+                        if ($stmt_rev->get_result()->num_rows == 0) {
+                            echo json_encode(["status" => "redirigir_resena", "mensaje" => "¡Libro completado! Déjanos tu opinión.", "id_libro" => $id_libro]);
+                            exit;
+                        }
                     }
                 }
-
             } else {
-                $stmt_reg = $conn->prepare("INSERT INTO intentos_fallidos (id_usuario, id_libro, CAPITULO, fecha_bloqueo) VALUES (?, ?, ?, NOW())");
-                $stmt_reg->bind_param("iii", $id_usuario, $id_libro, $id_capitulo);
-                $stmt_reg->execute();
+                // -------------------------------------------------
+                // C. REGISTRO DE FALLOS Y BLOQUEO (Solo usuarios)
+                // -------------------------------------------------
+                // Invitados no se bloquean porque no tenemos ID para rastrearlos en la BD
+                if ($id_usuario > 0) {
+                    $stmt_reg = $conn->prepare("INSERT INTO intentos_fallidos (id_usuario, id_libro, CAPITULO, fecha_bloqueo) VALUES (?, ?, ?, NOW())");
+                    $stmt_reg->bind_param("iii", $id_usuario, $id_libro, $id_capitulo);
+                    $stmt_reg->execute();
 
-                $stmt_cnt = $conn->prepare("SELECT COUNT(*) as intentos FROM intentos_fallidos WHERE id_usuario = ? AND id_libro = ? AND CAPITULO = ?");
-                $stmt_cnt->bind_param("iii", $id_usuario, $id_libro, $id_capitulo);
-                $stmt_cnt->execute();
-                $intentos = $stmt_cnt->get_result()->fetch_assoc()['intentos'] ?? 0;
+                    $stmt_cnt = $conn->prepare("SELECT COUNT(*) as intentos FROM intentos_fallidos WHERE id_usuario = ? AND id_libro = ? AND CAPITULO = ?");
+                    $stmt_cnt->bind_param("iii", $id_usuario, $id_libro, $id_capitulo);
+                    $stmt_cnt->execute();
+                    $intentos = $stmt_cnt->get_result()->fetch_assoc()['intentos'] ?? 0;
 
-                if ($intentos >= 3) {
-                    registrarBloqueo($conn, $id_usuario, $id_libro, $id_capitulo);
-                    echo json_encode(["status" => "capitulo_reprobado_bloqueado", "mensaje" => "3 intentos fallidos. Bloqueo 2 min.", "segundos_restantes" => 120]);
-                    exit;
+                    if ($intentos >= 3) {
+                        registrarBloqueo($conn, $id_usuario, $id_libro, $id_capitulo);
+                        echo json_encode(["status" => "capitulo_reprobado_bloqueado", "mensaje" => "3 intentos fallidos. Bloqueo 2 min.", "segundos_restantes" => 120]);
+                        exit;
+                    }
                 }
             }
         }
 
+        // Respuesta final JSON (Para todos)
         echo json_encode([
             "status" => "ok",
             "es_correcta" => $correcta,
@@ -229,6 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     exit;
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="es">

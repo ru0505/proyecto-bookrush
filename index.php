@@ -180,22 +180,38 @@ if ($categorias_query) {
 
 <header>
   <?php if ($id_usuario): ?>
-  <div class="mobile-user-info">
-    <h3>👤 Mi Cuenta</h3>
-    <div class="mobile-user-item">
-      <strong>Usuario:</strong>
-      <span><?= htmlspecialchars($usuario) ?></span>
+    <div class="mobile-user-info">
+      <h3>👤 Mi Cuenta</h3>
+      <div class="mobile-user-item">
+        <strong>Usuario:</strong>
+        <span><?= htmlspecialchars($usuario) ?></span>
+      </div>
+      <div class="mobile-user-item">
+        <strong>Email:</strong>
+        <span><?= htmlspecialchars($email) ?></span>
+      </div>
+      <div class="mobile-user-item">
+        <strong>🔥 Racha:</strong>
+        <span><?= $racha ?> días</span>
+      </div>
+      <button class="mobile-logout-btn" onclick="mostrarConfirmacion()">Cerrar Sesión</button>
     </div>
-    <div class="mobile-user-item">
-      <strong>Email:</strong>
-      <span><?= htmlspecialchars($email) ?></span>
+
+  <?php else: ?>
+  
+    <div class="mobile-user-info" style="text-align: center; padding-bottom: 20px;">
+      <h3>Bienvenido</h3>
+      <p style="margin-bottom: 15px; font-size: 0.9em; color: #ecf0f1;">Inicia sesión para guardar tu progreso</p>
+      
+      <a href="login.php" class="mobile-logout-btn" style="background-color: #d85e39; text-decoration: none; display: block; margin-bottom: 10px; text-align: center;">
+        Iniciar Sesión
+      </a>
+      
+      <a href="registro.php" class="mobile-logout-btn" style="background-color: #1e334e; border: 1px solid rgba(255,255,255,0.3); text-decoration: none; display: block; text-align: center;">
+        Registrarse
+      </a>
     </div>
-    <div class="mobile-user-item">
-      <strong>🔥 Racha:</strong>
-      <span><?= $racha ?> días</span>
-    </div>
-    <button class="mobile-logout-btn" onclick="mostrarConfirmacion()">Cerrar Sesión</button>
-  </div>
+    
   <?php endif; ?>
   
   <nav>

@@ -118,7 +118,7 @@ $libro = $result->fetch_assoc();
 
   <?php if (!empty($libro['archivo'])): ?>
     <a href="../descargar.php?archivo=<?= urlencode($libro['archivo']) ?>">
-      Descargar libro
+      Descargar libro 
     </a>
   <?php else: ?>
     <span class="btn-disabled">Descarga disponible próximamente</span>
