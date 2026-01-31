@@ -15,16 +15,29 @@ Ejecutar_programa:
   script:
     - echo "Ejecutando ... "
 
-Ejecutar_remoto:
+deploy-desa:
   stage: Remoto
-  allow_failure: false
+  before_script:
+    - echo "Antes de script desarrollo"
   script:
     - echo "Inicio de actualizacion desarrollo bookrush"
     - sh /www/wwwroot/repositorios/actualizar_bookrush.sh
     - echo "Ejecucion en remoto Finalizada book rush..."
     - ls -la
-  artifacts:
-    paths:
-      - /root
+  rules:
+    - if: '$CI_COMMIT_TAG != "" && $CI_COMMIT_BRANCH=="desarrollo"'  
+  tags:
+    - svritesur
+deploy-prod:
+  #image: alpine-latest
+  stage: Remoto
+  before_script:
+    - echo "Antes de script produccion"
+  script:
+    - echo "Inicio de actualizacion produccion bookrush"
+    - sh /www/wwwroot/repositorios/actualizar_bookrush_produccion.sh
+    - echo "Ejecucion en remoto Finalizada book rush..."
+  rules:
+    - if: '$CI_COMMIT_TAG != "" && $CI_COMMIT_BRANCH=="produccion"'  
   tags:
     - svritesur
