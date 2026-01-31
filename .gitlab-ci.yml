@@ -25,7 +25,7 @@ deploy-desa:
     - echo "Ejecucion en remoto Finalizada book rush..."
     - ls -la
   rules:
-    - if: '$CI_COMMIT_TAG != "" && $CI_COMMIT_BRANCH=="desarrollo"'  
+    - if: '$CI_COMMIT_TAG != "" && $CI_COMMIT_BRANCH=="diego"'  
   tags:
     - svritesur
 deploy-prod:
