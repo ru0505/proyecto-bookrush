@@ -112,17 +112,19 @@ $libro = $result->fetch_assoc();
         <?php endif; ?>
 
         <div class="botones">
-          <a href="../mapa_capitulos/mapa_capitulos.php?id_libro=<?= $libro['id_libro'] ?>">
-            Capítulos con preguntas
-          </a>
+  <a href="../mapa_capitulos/mapa_capitulos.php?id_libro=<?= $libro['id_libro'] ?>">
+    Capítulos con preguntas
+  </a>
 
-          <?php if (!empty($libro['archivo'])): ?>
-            <a href="../libros/<?= rawurlencode($libro['archivo']) ?>" download target="_blank">
-              Descargar libro
-            </a>
-          <?php else: ?>
-            <span class="btn-disabled">Descarga disponible próximamente</span>
-          <?php endif; ?>
+  <?php if (!empty($libro['archivo'])): ?>
+    <a href="../descargar.php?archivo=<?= urlencode($libro['archivo']) ?>">
+      Descargar libro
+    </a>
+  <?php else: ?>
+    <span class="btn-disabled">Descarga disponible próximamente</span>
+  <?php endif; ?>
+  
+</div>
           
         </div>
       </div>
