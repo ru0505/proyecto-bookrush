@@ -20,7 +20,7 @@ HTML, CSS, JavaScript, PHP, MySQL
 ----
 ## 📸 Vista previa
 
-![Login](screenshots/book rush_inicio.png)
+![Login](screenshots/book_rush_inicio.png)
 ![Quiz](screenshots/book_rush_perfil.png)
 ![Admin](screenshots/book_rush_recompensa.png)
 ---
