@@ -20,9 +20,9 @@ HTML, CSS, JavaScript, PHP, MySQL
 ----
 ## 📸 Vista previa
 
-![Login](screenshots/login.png)
-![Quiz](screenshots/quiz.png)
-![Admin](screenshots/admin.png)
+![Login](screenshots/book rush_inicio.png)
+![Quiz](screenshots/book_rush_perfil.png)
+![Admin](screenshots/book_rush_recompensa.png)
 ---
 
 ## ⚙️ Cómo ejecutar
