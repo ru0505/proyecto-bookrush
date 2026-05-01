@@ -17,7 +17,12 @@ Aplicación web interactiva tipo Kahoot para evaluar comprensión lectora median
 HTML, CSS, JavaScript, PHP, MySQL
 
 
+----
+## 📸 Vista previa
 
+![Login](screenshots/login.png)
+![Quiz](screenshots/quiz.png)
+![Admin](screenshots/admin.png)
 ---
 
 ## ⚙️ Cómo ejecutar
