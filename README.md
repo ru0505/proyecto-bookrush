@@ -16,10 +16,7 @@ Aplicación web interactiva tipo Kahoot para evaluar comprensión lectora median
 ## 🛠️ Tecnologías
 HTML, CSS, JavaScript, PHP, MySQL
 
----
 
-## 📸 Capturas
-(imágenes aquí)
 
 ---
 
